@@ -1,0 +1,345 @@
+BL51 BANKED LINKER/LOCATER V6.20                                                        04/08/2014  13:43:33  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.20, INVOKED BY:
+C:\KEIL8051\C51\BIN\BL51.EXE main.obj TO proj1 RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  main.obj (MAIN)
+
+
+LINK MAP OF MODULE:  proj1 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0002H     UNIT         MYDATA
+                    000AH     0016H                  *** GAP ***
+            BIT     0020H.0   0000H.1   UNIT         MYBITS
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     007DH     UNIT         PROG
+
+
+
+SYMBOL TABLE OF MODULE:  proj1 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  D:0008H         SEGMENT       MYDATA
+  B:0020H.0       SEGMENT       MYBITS
+  C:0800H         SEGMENT       PROG
+  B:00D8H.2       SYMBOL        AA
+  B:00D0H.6       SYMBOL        AC
+  D:00E0H         SYMBOL        ACC
+  B:00C8H.3       SYMBOL        ALTAB
+  B:00C8H.4       SYMBOL        ALTCD
+  D:00A2H         SYMBOL        AUXR1
+  D:00F0H         SYMBOL        B
+  D:00BDH         SYMBOL        BRGCON
+  D:00BEH         SYMBOL        BRGR0
+  D:00BFH         SYMBOL        BRGR1
+  D:00EAH         SYMBOL        CCCRA
+  D:00EBH         SYMBOL        CCCRB
+  D:00ECH         SYMBOL        CCCRC
+  D:00EDH         SYMBOL        CCCRD
+  B:0080H.4       SYMBOL        CIN1A
+  B:0080H.3       SYMBOL        CIN1B
+  B:0080H.2       SYMBOL        CIN2A
+  B:0080H.1       SYMBOL        CIN2B
+  D:00ACH         SYMBOL        CMP1
+  B:0080H.6       SYMBOL        CMP1O
+  D:00ADH         SYMBOL        CMP2
+  B:0080H.0       SYMBOL        CMP2O
+BL51 BANKED LINKER/LOCATER V6.20                                                      04/08/2014  13:43:33  PAGE 2
+
+
+  B:0080H.5       SYMBOL        CMPREF
+  D:0008H         SYMBOL        COUNT
+  B:00D8H.0       SYMBOL        CRSEL
+  B:00D0H.7       SYMBOL        CY
+  B:0080H.1       SYMBOL        DECBIT
+  D:00F3H         SYMBOL        DEEADR
+  D:00F1H         SYMBOL        DEECON
+  D:00F2H         SYMBOL        DEEDAT
+  C:086DH         SYMBOL        DELAYLOOP
+  D:0095H         SYMBOL        DIVM
+  C:0828H         SYMBOL        DONESOUND
+  C:0842H         SYMBOL        DONESOUND2
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  B:00A8H.7       SYMBOL        EA
+  B:00A8H.5       SYMBOL        EBO
+  B:00E8H.2       SYMBOL        EC
+  B:00E8H.4       SYMBOL        ECCU
+  B:00E8H.0       SYMBOL        EI2C
+  B:00E8H.7       SYMBOL        EIEE
+  B:00E8H.1       SYMBOL        EKBI
+  B:00A8H.4       SYMBOL        ES
+  B:00E8H.3       SYMBOL        ESPI
+  B:00A8H.4       SYMBOL        ESR
+  B:00E8H.6       SYMBOL        EST
+  B:00A8H.1       SYMBOL        ET0
+  B:00A8H.3       SYMBOL        ET1
+  B:00A8H.6       SYMBOL        EWDRT
+  B:00A8H.0       SYMBOL        EX0
+  B:00A8H.2       SYMBOL        EX1
+  B:00D0H.5       SYMBOL        F0
+  B:00D0H.1       SYMBOL        F1
+  B:0098H.7       SYMBOL        FE
+  B:00C8H.5       SYMBOL        HLTEN
+  B:00C8H.6       SYMBOL        HLTRN
+  D:00DBH         SYMBOL        I2ADR
+  D:00D8H         SYMBOL        I2CON
+  D:00DAH         SYMBOL        I2DAT
+  B:00D8H.6       SYMBOL        I2EN
+  D:00DDH         SYMBOL        I2SCLH
+  D:00DCH         SYMBOL        I2SCLL
+  D:00D9H         SYMBOL        I2STAT
+  B:00A0H.7       SYMBOL        ICA
+  B:00A0H.0       SYMBOL        ICB
+  D:00ABH         SYMBOL        ICRAH
+  D:00AAH         SYMBOL        ICRAL
+  D:00AFH         SYMBOL        ICRBH
+  D:00AEH         SYMBOL        ICRBL
+  B:0088H.1       SYMBOL        IE0
+  B:0088H.3       SYMBOL        IE1
+  D:00A8H         SYMBOL        IEN0
+  D:00E8H         SYMBOL        IEN1
+  B:00A0H.0       SYMBOL        INCBIT
+  C:086BH         SYMBOL        INNERLOOP
+  B:0090H.3       SYMBOL        INT0
+  B:0090H.4       SYMBOL        INT1
+  D:00B8H         SYMBOL        IP0
+BL51 BANKED LINKER/LOCATER V6.20                                                      04/08/2014  13:43:33  PAGE 3
+
+
+  D:00B7H         SYMBOL        IP0H
+  D:00F8H         SYMBOL        IP1
+  D:00F7H         SYMBOL        IP1H
+  B:0088H.0       SYMBOL        IT0
+  B:0088H.2       SYMBOL        IT1
+  B:0080H.0       SYMBOL        KB0
+  B:0080H.1       SYMBOL        KB1
+  B:0080H.2       SYMBOL        KB2
+  B:0080H.3       SYMBOL        KB3
+  B:0080H.4       SYMBOL        KB4
+  B:0080H.5       SYMBOL        KB5
+  B:0080H.6       SYMBOL        KB6
+  B:0080H.7       SYMBOL        KB7
+  D:0094H         SYMBOL        KBCON
+  D:0086H         SYMBOL        KBMASK
+  D:0093H         SYMBOL        KBPATN
+  B:0080H.6       SYMBOL        LEDBIT0
+  B:00A0H.7       SYMBOL        LEDBIT1
+  B:0080H.5       SYMBOL        LEDBIT2
+  B:00A0H.4       SYMBOL        LEDBIT3
+  C:0812H         SYMBOL        LOOP
+  C:0800H         SYMBOL        MAIN
+  C:085AH         SYMBOL        MAKESOUND
+  B:00A0H.3       SYMBOL        MISO
+  B:00A0H.2       SYMBOL        MOSI
+  B:00A0H.6       SYMBOL        OCA
+  B:0090H.6       SYMBOL        OCB
+  B:0090H.7       SYMBOL        OCC
+  B:00A0H.1       SYMBOL        OCD
+  D:00EFH         SYMBOL        OCRAH
+  D:00EEH         SYMBOL        OCRAL
+  D:00FBH         SYMBOL        OCRBH
+  D:00FAH         SYMBOL        OCRBL
+  D:00FDH         SYMBOL        OCRCH
+  D:00FCH         SYMBOL        OCRCL
+  D:00FFH         SYMBOL        OCRDH
+  D:00FEH         SYMBOL        OCRDL
+  B:00D0H.2       SYMBOL        OV
+  B:00D0H.0       SYMBOL        P
+  D:0080H         SYMBOL        P0
+  D:0084H         SYMBOL        P0M1
+  D:0085H         SYMBOL        P0M2
+  D:0090H         SYMBOL        P1
+  D:0091H         SYMBOL        P1M1
+  D:0092H         SYMBOL        P1M2
+  D:00A0H         SYMBOL        P2
+  D:00A4H         SYMBOL        P2M1
+  D:00A5H         SYMBOL        P2M2
+  D:00B0H         SYMBOL        P3
+  D:00B1H         SYMBOL        P3M1
+  D:00B2H         SYMBOL        P3M2
+  B:00B8H.5       SYMBOL        PB0
+  B:00F8H.4       SYMBOL        PCCU
+  B:00F8H.2       SYMBOL        PCL
+  D:0087H         SYMBOL        PCON
+  D:00B5H         SYMBOL        PCONA
+  B:00F8H.0       SYMBOL        PI2C
+BL51 BANKED LINKER/LOCATER V6.20                                                      04/08/2014  13:43:33  PAGE 4
+
+
+  B:00F8H.7       SYMBOL        PIEE
+  B:00F8H.1       SYMBOL        PKBI
+  B:0020H.0       SYMBOL        PLAYSOUND
+  B:00C8H.7       SYMBOL        PLLEN
+  B:00B8H.4       SYMBOL        PS
+  B:00F8H.3       SYMBOL        PSPI
+  B:00B8H.4       SYMBOL        PSR
+  B:00F8H.6       SYMBOL        PST
+  D:00D0H         SYMBOL        PSW
+  B:00B8H.1       SYMBOL        PT0
+  D:00F6H         SYMBOL        PT0AD
+  B:00B8H.3       SYMBOL        PT1
+  B:00B8H.6       SYMBOL        PWDRT
+  B:00B8H.0       SYMBOL        PX0
+  B:00B8H.2       SYMBOL        PX1
+  B:0098H.2       SYMBOL        RB8
+  B:0098H.4       SYMBOL        REN
+  B:0098H.0       SYMBOL        RI
+  B:00D0H.3       SYMBOL        RS0
+  B:00D0H.4       SYMBOL        RS1
+  B:0090H.5       SYMBOL        RST
+  D:00DFH         SYMBOL        RSTSRC
+  D:00D1H         SYMBOL        RTCCON
+  D:00D2H         SYMBOL        RTCH
+  D:00D3H         SYMBOL        RTCL
+  B:0090H.1       SYMBOL        RXD
+  D:00A9H         SYMBOL        SADDR
+  D:00B9H         SYMBOL        SADEN
+  D:0099H         SYMBOL        SBUF
+  B:0090H.2       SYMBOL        SCL
+  D:0098H         SYMBOL        SCON
+  B:0090H.3       SYMBOL        SDA
+  B:00D8H.3       SYMBOL        SI
+  C:0845H         SYMBOL        SKIPDECREASE
+  C:082BH         SYMBOL        SKIPINCREASE
+  B:0098H.7       SYMBOL        SM0
+  B:0098H.6       SYMBOL        SM1
+  B:0098H.5       SYMBOL        SM2
+  D:0081H         SYMBOL        SP
+  D:00E2H         SYMBOL        SPCTL
+  D:00E3H         SYMBOL        SPDAT
+  B:0090H.7       SYMBOL        SPEAKER
+  B:00A0H.5       SYMBOL        SPICLK
+  D:00E1H         SYMBOL        SPSTAT
+  B:00A0H.4       SYMBOL        SS
+  D:00BAH         SYMBOL        SSTAT
+  B:00D8H.5       SYMBOL        STA
+  C:0869H         SYMBOL        STARTLOOP
+  B:00D8H.4       SYMBOL        STO
+  B:0090H.2       SYMBOL        T0
+  B:0080H.7       SYMBOL        T1
+  D:008FH         SYMBOL        TAMOD
+  B:0098H.3       SYMBOL        TB8
+  D:0088H         SYMBOL        TCON
+  D:00C8H         SYMBOL        TCR20
+  D:00F9H         SYMBOL        TCR21
+  B:00C8H.2       SYMBOL        TDIR2
+BL51 BANKED LINKER/LOCATER V6.20                                                      04/08/2014  13:43:33  PAGE 5
+
+
+  B:0088H.5       SYMBOL        TF0
+  B:0088H.7       SYMBOL        TF1
+  D:008CH         SYMBOL        TH0
+  D:008DH         SYMBOL        TH1
+  D:00CDH         SYMBOL        TH2
+  B:0098H.1       SYMBOL        TI
+  D:00C9H         SYMBOL        TICR2
+  D:00E9H         SYMBOL        TIFR2
+  D:0009H         SYMBOL        TIMERVALUE
+  D:00DEH         SYMBOL        TISE2
+  D:008AH         SYMBOL        TL0
+  D:008BH         SYMBOL        TL1
+  D:00CCH         SYMBOL        TL2
+  D:0089H         SYMBOL        TMOD
+  B:00C8H.0       SYMBOL        TMOD20
+  B:00C8H.1       SYMBOL        TMOD21
+  D:00CFH         SYMBOL        TOR2H
+  D:00CEH         SYMBOL        TOR2L
+  D:00CBH         SYMBOL        TPCR2H
+  D:00CAH         SYMBOL        TPCR2L
+  B:0088H.4       SYMBOL        TR0
+  B:0088H.6       SYMBOL        TR1
+  D:0096H         SYMBOL        TRIM
+  B:0090H.0       SYMBOL        TXD
+  C:0847H         SYMBOL        UPDATELIGHTS
+  D:00A7H         SYMBOL        WDCON
+  D:00C1H         SYMBOL        WDL
+  D:00C2H         SYMBOL        WFEED1
+  D:00C3H         SYMBOL        WFEED2
+  B:00B0H.1       SYMBOL        XTAL1
+  B:00B0H.0       SYMBOL        XTAL2
+  C:0000H         LINE#         12
+  C:0800H         LINE#         29
+  C:0803H         LINE#         30
+  C:0806H         LINE#         31
+  C:0809H         LINE#         32
+  C:080CH         LINE#         33
+  C:080FH         LINE#         34
+  C:0812H         LINE#         36
+  C:0815H         LINE#         37
+  C:0817H         LINE#         38
+  C:0819H         LINE#         39
+  C:081BH         LINE#         40
+  C:081DH         LINE#         41
+  C:081FH         LINE#         42
+  C:0822H         LINE#         43
+  C:0825H         LINE#         44
+  C:0828H         LINE#         46
+  C:082BH         LINE#         48
+  C:082EH         LINE#         49
+  C:0830H         LINE#         50
+  C:0831H         LINE#         51
+  C:0833H         LINE#         52
+  C:0835H         LINE#         53
+  C:0837H         LINE#         54
+  C:0839H         LINE#         55
+  C:083CH         LINE#         56
+BL51 BANKED LINKER/LOCATER V6.20                                                      04/08/2014  13:43:33  PAGE 6
+
+
+  C:083FH         LINE#         57
+  C:0842H         LINE#         59
+  C:0845H         LINE#         61
+  C:0847H         LINE#         64
+  C:0849H         LINE#         65
+  C:084AH         LINE#         66
+  C:084BH         LINE#         67
+  C:084DH         LINE#         68
+  C:084EH         LINE#         69
+  C:084FH         LINE#         70
+  C:0851H         LINE#         71
+  C:0852H         LINE#         72
+  C:0853H         LINE#         73
+  C:0855H         LINE#         74
+  C:0856H         LINE#         75
+  C:0857H         LINE#         76
+  C:0859H         LINE#         77
+  C:085AH         LINE#         80
+  C:085DH         LINE#         81
+  C:0860H         LINE#         82
+  C:0863H         LINE#         83
+  C:0865H         LINE#         84
+  C:0867H         LINE#         85
+  C:0869H         LINE#         87
+  C:086BH         LINE#         89
+  C:086DH         LINE#         91
+  C:0870H         LINE#         92
+  C:0872H         LINE#         93
+  C:0874H         LINE#         94
+  C:0876H         LINE#         95
+  C:0878H         LINE#         96
+  C:087AH         LINE#         97
+  C:087CH         LINE#         98
+  -------         ENDMOD        MAIN
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0080H BYTE ( 6%) *
+******************************************************************************
+
+Program Size: data=10.1 xdata=0 code=128
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
