@@ -164,9 +164,11 @@ delayLoop:
 	ret							;return
 
 ;LED's 2-9 [9 is least significant, 1 is most signficant
+;                     0,         1,         2,		   3,		  4,		 5,		    6
 diceArray: db 11111111b, 11101111b, 11111110b, 11101110b, 10111010b, 10101010b, 10010010b
 	
 ;LED 1
+;                        0,         1,         2,		  3,		 4,		    5,		   6
 dicebitArray: db 11111111b, 11111111b, 11111110b, 11111110b, 11111110b, 11111110b, 11111110b
 	
 end
