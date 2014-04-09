@@ -1,9 +1,9 @@
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     1
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     1
 
 
-MACRO ASSEMBLER A51 V8.01
+MACRO ASSEMBLER A51 V8.02b
 OBJECT MODULE PLACED IN main.OBJ
-ASSEMBLER INVOKED BY: C:\Keil8051\C51\BIN\A51.EXE main.asm NOMOD51 SET(SMALL) DEBUG EP
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE main.asm NOMOD51 SET(SMALL) DEBUG EP
 
 LOC  OBJ            LINE     SOURCE
 
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
   0083          +1    56     KB3         BIT     0x83
   0084          +1    57     KB4         BIT     0x84
   0085          +1    58     KB5         BIT     0x85
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     2
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     2
 
   0086          +1    59     KB6         BIT     0x86
   0087          +1    60     KB7         BIT     0x87
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
   0089          +1   122     TMOD    DATA    0x89
   008A          +1   123     TL0         DATA        0x8A
   008C          +1   124     TH0         DATA        0x8C
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     3
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     3
 
   008B          +1   125     TL1         DATA        0x8B
   008D          +1   126     TH1         DATA        0x8D
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
                 +1   188     ;******* Real Time Clock *******
   00D3          +1   189     RTCL    DATA    0xD3
   00D2          +1   190     RTCH    DATA    0xD2
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     4
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     4
 
   00D1          +1   191     RTCCON  DATA    0xD1
                 +1   192     ;******* Interrupts ************
@@ -269,109 +269,185 @@ LOC  OBJ            LINE     SOURCE
   00A7               254       LEDbit1  equ P2.7                             ;LED 3 [green]/bit 1
   0085               255       LEDbit2  equ P0.5                             ;LED 2 [yellow]/bit 2
   00A4               256       LEDbit3  equ P2.4                             ;LED 1 [red]/bit 3
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     5
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     5
 
   0097               257       speaker  equ P1.7                             ;Speaker
-                     258     
-----                 259       cseg at 0
-0000 020000   F      260             ljmp main                                       ;jump to main functionality
-                     261             
-                     262       mydata segment data
-----                 263       rseg mydata
-                     264       
-0000                 265       count: ds 1
-0001                 266       timerValue: ds 1
-                     267     
-                     268       mybits segment bit
-----                 269       rseg mybits
-                     270     
-0000                 271       playSound: dbit 1
+  0094               258       dice     equ P1.4                             ;Toggle dice mode
+                     259       
+  00A4               260       LED1     equ P2.4                             ;LED1
+  0085               261       LED2     equ P0.5                             ;LED2
+  00A7               262       LED3     equ P2.7                             ;LED3
+  0086               263       LED4     equ P0.6                             ;LED4
+  0096               264       LED5     equ P1.6                             ;LED5
+  0084               265       LED6     equ P0.4                         ;LED6
+  00A5               266       LED7     equ P2.5                             ;LED7
+  0087               267       LED8     equ P0.7                             ;LED8
+  00A6               268       LED9     equ P2.6                             ;LED9
+                     269     
+----                 270       cseg at 0
+0000 020000   F      271             ljmp main                                       ;jump to main functionality
                      272             
-                     273       prog segment code
-----                 274       rseg prog
-                     275     
-0000                 276     main:
-0000 75A400          277             mov P2M1,  #0                           ;set port modes to bi-directional
-0003 759100          278             mov P1M1,  #0
-0006 758400          279             mov P0M1,  #0
-0009 750000   F      280             mov count, #0                           ;initalize count
-000C 75815F          281             mov SP, #5Fh                            ;Set up stack pointer
-000F 750031   F      282             mov timerValue, #256-207        ;Set inital timer value for 742Hz
-0012                 283     loop:
-0012 20A016          284             jb incBit, skipIncrease         ;skip increasing if button is not pressed
-0015 E500     F      285             mov A, count                            ;load count
-0017 2401            286             add A, #1                                       ;add one; don't use inc as it doesn
+                     273       mydata segment data
+----                 274       rseg mydata
+                     275       
+0000                 276       count: ds 1
+0001                 277       timerValue: ds 1
+0002                 278       compareValue: ds 1
+0003                 279       resetValue: ds 1
+                     280     
+                     281       mybits segment bit
+----                 282       rseg mybits
+                     283     
+0000                 284       playSound: dbit 1
+0001                 285       diceMode:  dbit 1
+                     286             
+                     287       prog segment code
+----                 288       rseg prog
+                     289     
+0000                 290     main:
+0000 75A400          291             mov P2M1,  #0                           ;set port modes to bi-directional
+0003 759100          292             mov P1M1,  #0
+0006 758400          293             mov P0M1,  #0
+0009 750000   F      294             mov count, #0                           ;initalize count
+000C 75815F          295             mov SP, #5Fh                            ;Set up stack pointer
+000F 750031   F      296             mov timerValue, #256-207        ;Set inital timer value for 742Hz
+0012 C200     F      297             clr diceMode                            ;Dice mode off by default
+0014 750010   F      298             mov compareValue,#16            ;Set value to overflow at
+0017 75000F   F      299             mov resetValue,#15                      ;Value to reset on underflow
+001A                 300     loop:
+001A C200     F      301             clr playSound                           ;reset the sound bit
+001C 20A01A          302             jb incBit, skipIncrease         ;skip increasing if button is not pressed
+001F E500     F      303             mov A, count                            ;load count
+0021 2401            304             add A, #1                                       ;add one; don't use inc as it doesn
                              't set AC
-0019 F500     F      287             mov count, A                            ;put value back into count
-001B A2D6            288             mov c, AC                                       ;store first into carry
-001D 9200     F      289             mov playSound, c                        ;store overflow for later
-001F 120000   F      290             lcall updateLights                      ;update lights
-0022 300003   F      291             jnb playSound, doneSound        ;skip sound if there isn't overflow
-0025 120000   F      292                     lcall makeSound                 ;make the sound
-0028                 293     doneSound:
-0028 30A0FD          294                     jnb incBit, doneSound           ;stay until the button is released
-002B                 295     skipIncrease:
-002B 208117          296             jb decBit, skipDecrease         ;skip decreasing if button is not pressed
-002E E500     F      297             mov A, count                            ;load count
-0030 C3              298             clr c                                           ;clear carry for subb
-0031 9401            299             subb A, #1                                      ;add one
-0033 F500     F      300             mov count, A                            ;put value back into count 
-0035 A2D6            301             mov c, AC                                       ;store first into carry
-0037 9200     F      302             mov playSound, c                        ;store overflow for later
-0039 120000   F      303             lcall updateLights                      ;update lights
-003C 300003   F      304             jnb playSound, doneSound2       ;skip sound if there isn't overflow
-003F 120000   F      305                     lcall makeSound                 ;make the sound         
-0042                 306     doneSound2:
-0042 3081FD          307                     jnb decBit, doneSound2  ;This is to prevent one button press to count as ma
-                             ny
-0045                 308     skipDecrease:
-0045 80CB            309             sjmp loop                                       ;loop back
-                     310             
-0047                 311     updateLights:
-0047 F500     F      312             mov count, A                            ;load count for rotating
-0049 13              313             rrc A                                           ;put zeroth bit into carry
-004A B3              314             cpl c                                           ;active low
-004B 9286            315             mov LEDbit0, c                          ;light LED0 if set
-004D 13              316             rrc A                                           ;1st bit                  
-004E B3              317             cpl c                                           ;active low
-004F 92A7            318             mov LEDbit1, c                          ;LED 1
-0051 13              319             rrc A                                           ;2nd bit
-0052 B3              320             cpl c                                           ;active low
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     6
+0023 F500     F      305             mov count, A                            ;put value back into count
+0025 C3              306             clr c                                           ;clear carry for subtract
+0026 9500     F      307             subb A, compareValue            ;see if they are equal
+0028 7005            308             jnz skipSound1                          ;don't play the sound if not equal
+002A D200     F      309                     setb playSound                  ;say to play the sound
+002C 850000   F      310                     mov count, 0                    ;set count to 0
+002F                 311     skipSound1:
+002F 1100     F      312             acall updateLights                      ;update lights
+0031 300002   F      313             jnb playSound, doneSound        ;skip sound if there isn't overflow
+0034 1100     F      314                     acall makeSound                 ;make the sound
+0036                 315     doneSound:
+0036 30A0FD          316                     jnb incBit, doneSound   ;stay until the button is released
+0039                 317     skipIncrease:
+0039 208118          318             jb decBit, skipDecrease         ;skip decreasing if button is not pressed
+003C E500     F      319             mov A, count                            ;load count
+003E C3              320             clr c                                           ;clear carry for subb
+003F 9401            321             subb A, #1                                      ;add one
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     6
 
-0053 9285            321             mov LEDbit2, c                          ;LED 2
-0055 13              322             rrc A                                           ;3rd bit [last bit]
-0056 B3              323             cpl c                                           ;active low
-0057 92A4            324             mov LEDbit3, c                          ;LED 3
-0059 22              325             ret
-                     326     
-005A                 327     makeSound:
-005A 758902          328             mov TMOD, #00000010b            ;Timer 0 = 8-bit auto reload
-005D 85008C   F      329             mov TH0, timerValue                     ;load reload value
-0060 85008A   F      330             mov TL0, timerValue                     ;load default value
-0063 D28C            331             setb TR0                                        ;turn on timer 0
-0065 C28D            332             clr TF0                                         ;clear timer 0 overflow
-0067 7F05            333             mov r7, #5                                      ;loop for a while
-0069                 334     startLoop:
-0069 7E00            335                     mov r6, #0                              ;inner loop to make sound last long
+0041 F500     F      322             mov count, A                            ;put value back into count 
+0043 5005            323             jnc skipSound2                          ;don't play the sound unless there's overfl
+                             ow
+0045 D200     F      324                     setb playSound                  ;say to play the sound
+0047 850000   F      325                     mov count,resetValue    ;Reload the counter
+004A                 326     skipSound2:
+004A 1100     F      327             acall updateLights                      ;update lights
+004C 300002   F      328             jnb playSound, doneSound2       ;skip sound if there isn't overflow
+004F 1100     F      329                     acall makeSound                 ;make the sound         
+0051                 330     doneSound2:
+0051 3081FD          331                     jnb decBit, doneSound2  ;This is to prevent one button press to count as ma
+                             ny
+0054                 332     skipDecrease:
+0054 20941E          333             jb dice, skipSwap                       ;skip swaping modes if button isn't pushed
+0057 30000D   F      334                     jnb diceMode, setDice   ;set mode to dice mode
+005A C200     F      335                     clr diceMode                    ;Dice mode off
+005C 750010   F      336                     mov compareValue, #16   ;Set value to overflow at
+005F 75000F   F      337                     mov resetValue, #15             ;Value to reset on underflow
+0062 750000   F      338                     mov count, #0                   ;reset counter
+0065 800B            339                     sjmp holdButton                 ;hold until button is released
+0067                 340     setDice:
+0067 D200     F      341                     setb diceMode                   ;Dice mode on
+0069 750007   F      342                     mov compareValue, #7    ;overflow at 7
+006C 750006   F      343                     mov resetValue, #6              ;re-roll to 6
+006F 750000   F      344                     mov count, #0                   ;reset counter
+0072                 345     holdButton:
+0072 3094FD          346                     jnb dice, holdButton    ;stay until the button is released
+0075                 347     skipSwap:
+0075 80A3            348             sjmp loop                                       ;loop back
+                     349             
+0077                 350     updateLights:
+0077 200013   F      351             jb diceMode, diceLights         ;jump to dice mode if it is enabled
+007A F500     F      352                     mov count, A                    ;load count for rotating
+007C 13              353                     rrc A                                   ;put zeroth bit into carry
+007D B3              354                     cpl c                                   ;active low
+007E 9286            355                     mov LEDbit0, c                  ;light LED0 if set
+0080 13              356                     rrc A                                   ;1st bit                  
+0081 B3              357                     cpl c                                   ;active low
+0082 92A7            358                     mov LEDbit1, c                  ;LED 1
+0084 13              359                     rrc A                                   ;2nd bit
+0085 B3              360                     cpl c                                   ;active low
+0086 9285            361                     mov LEDbit2, c                  ;LED 2
+0088 13              362                     rrc A                                   ;3rd bit [last bit]
+0089 B3              363                     cpl c                                   ;active low
+008A 92A4            364                     mov LEDbit3, c                  ;LED 3
+008C 22              365                     ret
+008D                 366     diceLights:
+008D E500     F      367                     mov A, count                    ;move count into A
+008F 900000   F      368                     mov DPTR, #dicebitArray ;move array start into DPTR
+0092 93              369                     movc A, @A + DPTR               ;load bit into a
+0093 33              370                     rlc A                                   ;rotate bit into c
+0094 900000   F      371                     mov DPTR, #diceArray    ;move array start into DPTR
+0097 93              372                     movc A, @A + DPTR               ;load value into A
+0098 92A4            373                     mov LED1, c                             ;light LED1 if needed
+009A 13              374                     rrc A                                   ;get lowest bit into A
+009B 92A6            375                     mov LED9, c                             ;LED9
+009D 13              376                     rrc A                                   ;same thing
+009E 9287            377                     mov LED8, c                             ;repeat for all remaining LED's...
+00A0 13              378                     rrc A
+00A1 92A5            379                     mov LED7, c
+00A3 13              380                     rrc A
+00A4 9284            381                     mov LED6, c
+00A6 13              382                     rrc A
+00A7 9296            383                     mov LED5, c
+00A9 13              384                     rrc A
+00AA 9286            385                     mov LED4, c
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     7
+
+00AC 13              386                     rrc A
+00AD 92A7            387                     mov LED3, c
+00AF 13              388                     rrc A
+00B0 9285            389                     mov LED2, c                             ;done
+00B2 22              390                     ret
+                     391                     
+                     392     
+00B3                 393     makeSound:
+00B3 758902          394             mov TMOD, #00000010b            ;Timer 0 = 8-bit auto reload
+00B6 85008C   F      395             mov TH0, timerValue                     ;load reload value
+00B9 85008A   F      396             mov TL0, timerValue                     ;load default value
+00BC D28C            397             setb TR0                                        ;turn on timer 0
+00BE C28D            398             clr TF0                                         ;clear timer 0 overflow
+00C0 7F05            399             mov r7, #5                                      ;loop for a while
+00C2                 400     startLoop:
+00C2 7E00            401                     mov r6, #0                              ;inner loop to make sound last long
                              er
-006B                 336     innerLoop:
-006B 7818            337                             mov r0, #24                     ;load number of times to loop for t
+00C4                 402     innerLoop:
+00C4 7818            403                             mov r0, #24                     ;load number of times to loop for t
                              he frequency
-006D                 338     delayLoop:
-006D 308DFD          339                             jnb TF0, delayLoop      ;delay until timer overflows
-0070 C28D            340                             clr TF0                         ;clear timer overflow
-0072 D8F9            341                             djnz r0, delayLoop      ;jump back to the delayLoop the proper numb
+00C6                 404     delayLoop:
+00C6 308DFD          405                             jnb TF0, delayLoop      ;delay until timer overflows
+00C9 C28D            406                             clr TF0                         ;clear timer overflow
+00CB D8F9            407                             djnz r0, delayLoop      ;jump back to the delayLoop the proper numb
                              er of times
-0074 B297            342                     cpl speaker                             ;flip the speaker
-0076 DEF3            343                     djnz r6, innerLoop              ;make the sound last longer [inner]
-0078 DFEF            344             djnz r7, startLoop                      ;make the sound last longer [outer]
-007A C28C            345             clr TR0                                         ;done with the timer; turn it off
-007C 22              346             ret                                                     ;return
-                     347             
-                     348             
-                     349     end
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     7
+00CD B297            408                     cpl speaker                             ;flip the speaker
+00CF DEF3            409                     djnz r6, innerLoop              ;make the sound last longer [inner]
+00D1 DFEF            410             djnz r7, startLoop                      ;make the sound last longer [outer]
+00D3 C28C            411             clr TR0                                         ;done with the timer; turn it off
+00D5 22              412             ret                                                     ;return
+                     413     
+                     414     ;LED's 2-9 [9 is least significant, 1 is most signficant
+00D6 EFFEEEBA        415     diceArray: db 11101111b, 11111110b, 11101110b, 10111010b, 10101010b, 10010010b
+00DA AA92                    
+                     416             
+                     417     ;LED 1
+00DC FFFEFEFE        418     dicebitArray: db 11111111b, 11111110b, 11111110b, 11111110b, 11111110b, 11111110b
+00E0 FEFE                    
+                     419             
+                     420     end
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     8
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -402,6 +478,7 @@ CMP1O. . . . . . .  B ADDR   0080H.6 A
 CMP2 . . . . . . .  D ADDR   00ADH   A   
 CMP2O. . . . . . .  B ADDR   0080H.0 A   
 CMPREF . . . . . .  B ADDR   0080H.5 A   
+COMPAREVALUE . . .  D ADDR   0002H   R   SEG=MYDATA
 COUNT. . . . . . .  D ADDR   0000H   R   SEG=MYDATA
 CRSEL. . . . . . .  B ADDR   00D8H.0 A   
 CY . . . . . . . .  B ADDR   00D0H.7 A   
@@ -409,10 +486,15 @@ DECBIT . . . . . .  B ADDR   0080H.1 A
 DEEADR . . . . . .  D ADDR   00F3H   A   
 DEECON . . . . . .  D ADDR   00F1H   A   
 DEEDAT . . . . . .  D ADDR   00F2H   A   
-DELAYLOOP. . . . .  C ADDR   006DH   R   SEG=PROG
+DELAYLOOP. . . . .  C ADDR   00C6H   R   SEG=PROG
+DICE . . . . . . .  B ADDR   0090H.4 A   
+DICEARRAY. . . . .  C ADDR   00D6H   R   SEG=PROG
+DICEBITARRAY . . .  C ADDR   00DCH   R   SEG=PROG
+DICELIGHTS . . . .  C ADDR   008DH   R   SEG=PROG
+DICEMODE . . . . .  B ADDR   0000H.1 R   SEG=MYBITS
 DIVM . . . . . . .  D ADDR   0095H   A   
-DONESOUND. . . . .  C ADDR   0028H   R   SEG=PROG
-DONESOUND2 . . . .  C ADDR   0042H   R   SEG=PROG
+DONESOUND. . . . .  C ADDR   0036H   R   SEG=PROG
+DONESOUND2 . . . .  C ADDR   0051H   R   SEG=PROG
 DPH. . . . . . . .  D ADDR   0083H   A   
 DPL. . . . . . . .  D ADDR   0082H   A   
 EA . . . . . . . .  B ADDR   00A8H.7 A   
@@ -433,14 +515,15 @@ EX0. . . . . . . .  B ADDR   00A8H.0 A
 EX1. . . . . . . .  B ADDR   00A8H.2 A   
 F0 . . . . . . . .  B ADDR   00D0H.5 A   
 F1 . . . . . . . .  B ADDR   00D0H.1 A   
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE     9
+
 FE . . . . . . . .  B ADDR   0098H.7 A   
 HLTEN. . . . . . .  B ADDR   00C8H.5 A   
 HLTRN. . . . . . .  B ADDR   00C8H.6 A   
+HOLDBUTTON . . . .  C ADDR   0072H   R   SEG=PROG
 I2ADR. . . . . . .  D ADDR   00DBH   A   
 I2CON. . . . . . .  D ADDR   00D8H   A   
 I2DAT. . . . . . .  D ADDR   00DAH   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     8
-
 I2EN . . . . . . .  B ADDR   00D8H.6 A   
 I2SCLH . . . . . .  D ADDR   00DDH   A   
 I2SCLL . . . . . .  D ADDR   00DCH   A   
@@ -456,7 +539,7 @@ IE1. . . . . . . .  B ADDR   0088H.3 A
 IEN0 . . . . . . .  D ADDR   00A8H   A   
 IEN1 . . . . . . .  D ADDR   00E8H   A   
 INCBIT . . . . . .  B ADDR   00A0H.0 A   
-INNERLOOP. . . . .  C ADDR   006BH   R   SEG=PROG
+INNERLOOP. . . . .  C ADDR   00C4H   R   SEG=PROG
 INT0 . . . . . . .  B ADDR   0090H.3 A   
 INT1 . . . . . . .  B ADDR   0090H.4 A   
 IP0. . . . . . . .  D ADDR   00B8H   A   
@@ -476,21 +559,32 @@ KB7. . . . . . . .  B ADDR   0080H.7 A
 KBCON. . . . . . .  D ADDR   0094H   A   
 KBMASK . . . . . .  D ADDR   0086H   A   
 KBPATN . . . . . .  D ADDR   0093H   A   
+LED1 . . . . . . .  B ADDR   00A0H.4 A   
+LED2 . . . . . . .  B ADDR   0080H.5 A   
+LED3 . . . . . . .  B ADDR   00A0H.7 A   
+LED4 . . . . . . .  B ADDR   0080H.6 A   
+LED5 . . . . . . .  B ADDR   0090H.6 A   
+LED6 . . . . . . .  B ADDR   0080H.4 A   
+LED7 . . . . . . .  B ADDR   00A0H.5 A   
+LED8 . . . . . . .  B ADDR   0080H.7 A   
+LED9 . . . . . . .  B ADDR   00A0H.6 A   
 LEDBIT0. . . . . .  B ADDR   0080H.6 A   
 LEDBIT1. . . . . .  B ADDR   00A0H.7 A   
 LEDBIT2. . . . . .  B ADDR   0080H.5 A   
 LEDBIT3. . . . . .  B ADDR   00A0H.4 A   
-LOOP . . . . . . .  C ADDR   0012H   R   SEG=PROG
+LOOP . . . . . . .  C ADDR   001AH   R   SEG=PROG
 MAIN . . . . . . .  C ADDR   0000H   R   SEG=PROG
-MAKESOUND. . . . .  C ADDR   005AH   R   SEG=PROG
+MAKESOUND. . . . .  C ADDR   00B3H   R   SEG=PROG
 MISO . . . . . . .  B ADDR   00A0H.3 A   
 MOSI . . . . . . .  B ADDR   00A0H.2 A   
-MYBITS . . . . . .  B SEG    0001H       REL=UNIT
-MYDATA . . . . . .  D SEG    0002H       REL=UNIT
+MYBITS . . . . . .  B SEG    0002H       REL=UNIT
+MYDATA . . . . . .  D SEG    0004H       REL=UNIT
 OCA. . . . . . . .  B ADDR   00A0H.6 A   
 OCB. . . . . . . .  B ADDR   0090H.6 A   
 OCC. . . . . . . .  B ADDR   0090H.7 A   
 OCD. . . . . . . .  B ADDR   00A0H.1 A   
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE    10
+
 OCRAH. . . . . . .  D ADDR   00EFH   A   
 OCRAL. . . . . . .  D ADDR   00EEH   A   
 OCRBH. . . . . . .  D ADDR   00FBH   A   
@@ -507,8 +601,6 @@ P0M2 . . . . . . .  D ADDR   0085H   A
 P1 . . . . . . . .  D ADDR   0090H   A   
 P1M1 . . . . . . .  D ADDR   0091H   A   
 P1M2 . . . . . . .  D ADDR   0092H   A   
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE     9
-
 P2 . . . . . . . .  D ADDR   00A0H   A   
 P2M1 . . . . . . .  D ADDR   00A4H   A   
 P2M2 . . . . . . .  D ADDR   00A5H   A   
@@ -525,7 +617,7 @@ PIEE . . . . . . .  B ADDR   00F8H.7 A
 PKBI . . . . . . .  B ADDR   00F8H.1 A   
 PLAYSOUND. . . . .  B ADDR   0000H.0 R   SEG=MYBITS
 PLLEN. . . . . . .  B ADDR   00C8H.7 A   
-PROG . . . . . . .  C SEG    007DH       REL=UNIT
+PROG . . . . . . .  C SEG    00E2H       REL=UNIT
 PS . . . . . . . .  B ADDR   00B8H.4 A   
 PSPI . . . . . . .  B ADDR   00F8H.3 A   
 PSR. . . . . . . .  B ADDR   00B8H.4 A   
@@ -539,6 +631,7 @@ PX0. . . . . . . .  B ADDR   00B8H.0 A
 PX1. . . . . . . .  B ADDR   00B8H.2 A   
 RB8. . . . . . . .  B ADDR   0098H.2 A   
 REN. . . . . . . .  B ADDR   0098H.4 A   
+RESETVALUE . . . .  D ADDR   0003H   R   SEG=MYDATA
 RI . . . . . . . .  B ADDR   0098H.0 A   
 RS0. . . . . . . .  B ADDR   00D0H.3 A   
 RS1. . . . . . . .  B ADDR   00D0H.4 A   
@@ -554,9 +647,15 @@ SBUF . . . . . . .  D ADDR   0099H   A
 SCL. . . . . . . .  B ADDR   0090H.2 A   
 SCON . . . . . . .  D ADDR   0098H   A   
 SDA. . . . . . . .  B ADDR   0090H.3 A   
+SETDICE. . . . . .  C ADDR   0067H   R   SEG=PROG
 SI . . . . . . . .  B ADDR   00D8H.3 A   
-SKIPDECREASE . . .  C ADDR   0045H   R   SEG=PROG
-SKIPINCREASE . . .  C ADDR   002BH   R   SEG=PROG
+SKIPDECREASE . . .  C ADDR   0054H   R   SEG=PROG
+SKIPINCREASE . . .  C ADDR   0039H   R   SEG=PROG
+A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 21:41:07 PAGE    11
+
+SKIPSOUND1 . . . .  C ADDR   002FH   R   SEG=PROG
+SKIPSOUND2 . . . .  C ADDR   004AH   R   SEG=PROG
+SKIPSWAP . . . . .  C ADDR   0075H   R   SEG=PROG
 SM0. . . . . . . .  B ADDR   0098H.7 A   
 SM1. . . . . . . .  B ADDR   0098H.6 A   
 SM2. . . . . . . .  B ADDR   0098H.5 A   
@@ -569,14 +668,12 @@ SPSTAT . . . . . .  D ADDR   00E1H   A
 SS . . . . . . . .  B ADDR   00A0H.4 A   
 SSTAT. . . . . . .  D ADDR   00BAH   A   
 STA. . . . . . . .  B ADDR   00D8H.5 A   
-STARTLOOP. . . . .  C ADDR   0069H   R   SEG=PROG
+STARTLOOP. . . . .  C ADDR   00C2H   R   SEG=PROG
 STO. . . . . . . .  B ADDR   00D8H.4 A   
 T0 . . . . . . . .  B ADDR   0090H.2 A   
 T1 . . . . . . . .  B ADDR   0080H.7 A   
 TAMOD. . . . . . .  D ADDR   008FH   A   
 TB8. . . . . . . .  B ADDR   0098H.3 A   
-A51 MACRO ASSEMBLER  MAIN                                                                 04/08/2014 13:43:33 PAGE    10
-
 TCON . . . . . . .  D ADDR   0088H   A   
 TCR20. . . . . . .  D ADDR   00C8H   A   
 TCR21. . . . . . .  D ADDR   00F9H   A   
@@ -605,7 +702,7 @@ TR0. . . . . . . .  B ADDR   0088H.4 A
 TR1. . . . . . . .  B ADDR   0088H.6 A   
 TRIM . . . . . . .  D ADDR   0096H   A   
 TXD. . . . . . . .  B ADDR   0090H.0 A   
-UPDATELIGHTS . . .  C ADDR   0047H   R   SEG=PROG
+UPDATELIGHTS . . .  C ADDR   0077H   R   SEG=PROG
 WDCON. . . . . . .  D ADDR   00A7H   A   
 WDL. . . . . . . .  D ADDR   00C1H   A   
 WFEED1 . . . . . .  D ADDR   00C2H   A   
