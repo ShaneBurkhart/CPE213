@@ -7,7 +7,7 @@
   LEDbit2  equ P0.5				;LED 2 [yellow]/bit 2
   LEDbit3  equ P2.4				;LED 1 [red]/bit 3
   speaker  equ P1.7				;Speaker
-  dice	   equ P1.4				;Toggle dice mode
+  dice	   equ P1.4				;Toggle dice mode  [Switch 5]
   
   LED1	   equ P2.4				;LED1
   LED2	   equ P0.5				;LED2
@@ -52,14 +52,13 @@ main:
 loop:
 	clr playSound				;reset the sound bit
 	jb incBit, skipIncrease		;skip increasing if button is not pressed
-	mov A, count				;load count
-	add A, #1					;add one; don't use inc as it doesn't set AC
-	mov count, A				;put value back into count
+	inc count				    ;increment count
+	mov A, count			    ;load count to check for overflow
 	clr c						;clear carry for subtract
 	subb A, compareValue		;see if they are equal
 	jnz skipSound1				;don't play the sound if not equal
 		setb playSound			;say to play the sound
-		mov count, 0			;set count to 0
+		mov count, #0			;set count to 0
 skipSound1:
 	acall updateLights			;update lights
 	jnb playSound, doneSound	;skip sound if there isn't overflow
@@ -85,15 +84,17 @@ skipDecrease:
 	jb dice, skipSwap			;skip swaping modes if button isn't pushed
 		jnb diceMode, setDice	;set mode to dice mode
 		clr diceMode			;Dice mode off
-		mov compareValue, #16	;Set value to overflow at
+		mov compareValue, #16	;Set value to overflow at 16
 		mov resetValue, #15		;Value to reset on underflow
 		mov count, #0			;reset counter
+		acall blackOut			;update lights for new count
 		sjmp holdButton			;hold until button is released
 setDice:
 		setb diceMode			;Dice mode on
 		mov compareValue, #7	;overflow at 7
 		mov resetValue, #6		;re-roll to 6
 		mov count, #0			;reset counter
+		acall blackOut			;update lights for new count
 holdButton:
 		jnb dice, holdButton	;stay until the button is released
 skipSwap:
@@ -101,7 +102,7 @@ skipSwap:
 	
 updateLights:
 	jb diceMode, diceLights		;jump to dice mode if it is enabled
-		mov count, A			;load count for rotating
+		mov A, count			;load count for rotating
 		rrc A					;put zeroth bit into carry
 		cpl c					;active low
 		mov LEDbit0, c			;light LED0 if set
@@ -119,7 +120,8 @@ diceLights:
 		mov A, count			;move count into A
 		mov DPTR, #dicebitArray	;move array start into DPTR
 		movc A, @A + DPTR		;load bit into a
-		rlc A					;rotate bit into c
+		rrc A					;rotate bit into c
+		mov A, count			;load count into A
 		mov DPTR, #diceArray 	;move array start into DPTR
 		movc A, @A + DPTR		;load value into A
 		mov LED1, c				;light LED1 if needed
@@ -140,7 +142,18 @@ diceLights:
 		rrc A
 		mov LED2, c				;done
 		ret
-		
+	
+blackOut:				 		;turn off all the lights
+	setb LED1					;LED1...
+	setb LED2
+	setb LED3
+	setb LED4
+	setb LED5
+	setb LED6
+	setb LED7
+	setb LED8
+	setb LED9					;...LED9
+	ret	
 
 makeSound:
 	mov TMOD, #00000010b		;Timer 0 = 8-bit auto reload
@@ -166,9 +179,9 @@ delayLoop:
 ;LED's 2-9 [9 is least significant, 1 is most signficant
 ;                     0,         1,         2,		   3,		  4,		 5,		    6
 diceArray: db 11111111b, 11101111b, 11111110b, 11101110b, 10111010b, 10101010b, 10010010b
-	
+																						   
 ;LED 1
-;                        0,         1,         2,		  3,		 4,		    5,		   6
-dicebitArray: db 11111111b, 11111111b, 11111110b, 11111110b, 11111110b, 11111110b, 11111110b
+;                0, 1, 2, 3, 4,	5, 6
+dicebitArray: db 1, 1, 0, 0, 0, 0, 0
 	
 end
