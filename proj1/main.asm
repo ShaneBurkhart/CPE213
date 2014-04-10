@@ -198,13 +198,13 @@ theFinalCountdown:                      ;Play song
 playNoteLoop:
   mov A, notePos
   movc A, @A + DPTR                     ;Read in freq coefficient
-  mov timerValue, A
+  mov sixteenthNotes, A
   inc notePos                           ;Go to next byte
   mov A, notePos
   movc A, @A + DPTR                     ;Read in number of sixteenth notes
-  mov sixteenthNotes, A
+  mov timerValue, A
   inc notePos
-  orl A, timerValue                     ;Check if both sixteenthNotes and timerValue are zero. Sixteenth already there.
+  orl A, sixteenthNotes                     ;Check if both sixteenthNotes and timerValue are zero. Sixteenth already there.
   jz playNoteReturn
   acall playNote                        ;Play notes
   sjmp playNoteLoop                     ;Jump to top of loop
@@ -215,28 +215,22 @@ playNote: ;New makeSound function.  Not clean but easier than trying to modify c
           ;If given a 1, it plays a 16th note.  The coefficient will be how many 16th notes to play.  4 would be a quarter note.
           ;timerValue needs to be set and is satisfies this equation: timerValue = 255-some_number ;;; ticks_per_half_period = 50 * some_number
           ;quarterNotes needs to be set and is the number of quarter notes you want to play.
-  mov TMOD, #00000010b		        ;Timer 0 = 8-bit auto reload
+  mov TMOD, #00000010b	        ;Timer 0 = 8-bit auto reload
   mov TH0, timerValue			;load reload value.
   mov TL0, timerValue			;load default value
   setb TR0				;turn on timer 0
   clr TF0				;clear timer 0 overflow
 
   noteLoop:
-    mov r5, #0
-    outerNoteLoop:
-      mov r7, #0			;The delay for a 16th will be 256 * 256 * 14 at 2 beats per second
-      innerNoteLoop:
-        mov r6, #14			;Will decrement first so 256 cycles
-        freqLoop:
-          mov r0, #50			;Coefficient to for freq.  Ticks_for_half_period = 50 * some_number
-          timerLoop:
-            jnb TF0, timerLoop	        ;delay until timer overflows
-            clr TF0			;clear timer overflow
-            djnz r0, timerLoop	        ;jump back to the delayLoop the proper number of times
-          cpl speaker			;flip the speaker
-          djnz r6, freqLoop		;First 14
-        djnz r7, innerNoteLoop		;Second 256
-      djnz r5, outerNoteLoop		;Third 256
+  	mov r6, #40
+    freqLoop:
+      mov r0, #10			;Coefficient to for freq.  Ticks_for_half_period = 100 * some_number
+      timerLoop:
+        jnb TF0, timerLoop	        ;delay until timer overflows
+        clr TF0						;clear timer overflow
+        djnz r0, timerLoop	        ;jump back to the delayLoop the proper number of times
+      cpl speaker			;flip the speaker
+      djnz r6, freqLoop		;First 14
     djnz sixteenthNotes, noteLoop         ;Number of quarter not loops
 
   clr TR0				;done with the timer; turn it off
@@ -245,59 +239,59 @@ playNote: ;New makeSound function.  Not clean but easier than trying to modify c
 
 theFinalCountdownNotes:
 ;Measure 18
-  db 1, 180
-  db 4, 122
-  db 4, 56
+  db 7, 162
+  db 12, 89
+  db 28, 6
 ;Measure 19
-  db 6, 255
-  db 1, 130
-  db 1, 122
-  db 1, 130
-  db 1, 255
-  db 1, 114
-  db 1, 255
-  db 4, 180
+  db 255, 255
+  db 7, 98
+  db 7, 89
+  db 7, 98
+  db 255, 255
+  db 7, 79
+  db 255, 255
+  db 49, 162
 ;Measure 20
-  db 2, 180
-  db 4, 255
-  db 1, 130
-  db 1, 122
-  db 4, 130
-  db 4, 56
+  db 25, 162
+  db 255, 255
+  db 7, 98
+  db 7, 89
+  db 29, 98
+  db 19, 6
 ;Measure 21
-  db 6, 255
-  db 1, 180
-  db 1, 171
-  db 1, 180
-  db 1, 255
-  db 1, 171
-  db 1, 255
-  db 2, 78
-  db 1, 180
-  db 1, 255
+  db 255, 255
+  db 12, 162
+  db 11, 150
+  db 12, 162
+  db 255, 255
+  db 11, 150
+  db 255, 255
+  db 11, 33
+  db 12, 162
+  db 255, 255
 ;Measure 22
-  db 6, 171
-  db 1, 78
-  db 1, 171
-  db 6, 180
-  db 1, 171
-  db 1, 180
+  db 66, 150
+  db 5, 33
+  db 11, 150
+  db 74, 162
+  db 11, 150
+  db 12, 162
 ;Measure 23
-  db 2, 122
-  db 2, 180
-  db 2, 171
-  db 2, 78
-  db 4, 56
-  db 4, 130
+  db 14, 89
+  db 25, 162
+  db 22, 150
+  db 10, 33
+  db 19, 6
+  db 29, 98
 ;Measure 24
-  db 9, 122
-  db 2, 114
-  db 3, 130
-  db 1, 114
-  db 1, 180
+  db 62, 89
+  db 13, 79
+  db 22, 98
+  db 7, 79
+  db 12, 162
 ;Measure 25
-  db 12, 122
-  db 4, 255
+  db 83, 89
+  db 255, 255
 ;Ending Note
   db 0, 0
 

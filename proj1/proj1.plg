@@ -3,171 +3,47 @@
 <pre>
 <h1>µVision3 Build Log</h1>
 <h2>Project:</h2>
-S:\CpE213\proj1\proj1.uv2
-Project File Date:  04/08/2014
+S:\CPE213\proj1\proj1.uv2
+Project File Date:  04/09/2014
 
 <h2>Output:</h2>
 Build target 'Target 1'
 assembling main.asm...
-reg932.inc(6): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(7): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(8): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(9): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(10): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(12): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(14): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(19): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(20): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(21): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(22): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(23): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(24): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(26): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(30): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(34): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(37): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(40): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(72): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(73): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(82): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(83): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(84): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(85): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(86): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(87): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(88): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(89): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(90): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(91): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(120): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(121): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(122): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(123): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(124): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(125): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(130): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(131): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(132): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(133): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(134): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(135): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(136): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(137): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(146): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(147): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(199): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(202): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(204): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(205): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(206): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(207): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(217): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(219): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(220): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(221): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(222): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(231): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-reg932.inc(232): error A10: ATTEMPT TO DEFINE AN ALREADY DEFINED SYMBOL
-Target not created
-Build target 'Target 1'
-assembling main.asm...
 linking...
-Program Size: data=9.0 xdata=0 code=101
+Program Size: data=14.2 xdata=0 code=418
+creating hex file from "proj1"...
+"proj1" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+linking...
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 assembling main.asm...
 linking...
-Program Size: data=9.0 xdata=0 code=101
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 assembling main.asm...
 linking...
-Program Size: data=10.0 xdata=0 code=104
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 assembling main.asm...
 linking...
-Program Size: data=11.0 xdata=0 code=107
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 linking...
-Program Size: data=11.0 xdata=0 code=107
-creating hex file from "proj1"...
-"proj1" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-assembling main.asm...
-linking...
-Program Size: data=11.0 xdata=0 code=101
-creating hex file from "proj1"...
-"proj1" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-assembling main.asm...
-main.asm(24): error A9: SYNTAX ERROR
-main.asm(41): error A45: UNDEFINED SYMBOL (PASS-2)
-main.asm(43): error A45: UNDEFINED SYMBOL (PASS-2)
-main.asm(53): error A45: UNDEFINED SYMBOL (PASS-2)
-main.asm(55): error A45: UNDEFINED SYMBOL (PASS-2)
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-main.asm(41): error A48: DATA-ADDRESS EXPECTED
-main.asm(41): error A48: DATA-ADDRESS EXPECTED
-main.asm(53): error A48: DATA-ADDRESS EXPECTED
-main.asm(53): error A48: DATA-ADDRESS EXPECTED
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-main.asm(41): error A9: SYNTAX ERROR
-main.asm(53): error A48: DATA-ADDRESS EXPECTED
-main.asm(53): error A48: DATA-ADDRESS EXPECTED
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-main.asm(37): error A48: DATA-ADDRESS EXPECTED
-main.asm(39): error A48: DATA-ADDRESS EXPECTED
-main.asm(49): error A48: DATA-ADDRESS EXPECTED
-main.asm(51): error A48: DATA-ADDRESS EXPECTED
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-main.asm(54): error A48: DATA-ADDRESS EXPECTED
-main.asm(54): error A48: DATA-ADDRESS EXPECTED
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-main.asm(55): error A48: DATA-ADDRESS EXPECTED
-main.asm(55): error A48: DATA-ADDRESS EXPECTED
-Target not created
-Build target 'Target 1'
-assembling main.asm...
-linking...
-Program Size: data=11.1 xdata=0 code=120
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 assembling main.asm...
 linking...
-Program Size: data=11.1 xdata=0 code=124
-creating hex file from "proj1"...
-"proj1" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-assembling main.asm...
-linking...
-Program Size: data=11.1 xdata=0 code=127
-creating hex file from "proj1"...
-"proj1" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-linking...
-Program Size: data=11.1 xdata=0 code=127
-creating hex file from "proj1"...
-"proj1" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-assembling main.asm...
-linking...
-Program Size: data=10.1 xdata=0 code=128
+Program Size: data=14.2 xdata=0 code=418
 creating hex file from "proj1"...
 "proj1" - 0 Error(s), 0 Warning(s).
