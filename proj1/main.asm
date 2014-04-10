@@ -230,9 +230,10 @@ playNoteReturn:
   ret
 
 playNote: ;New makeSound function.  Not clean but easier than trying to modify code and potentially breaking someone else's stuff
-          ;If given a 1, it plays a 16th note.  The coefficient will be how many 16th notes to play.  4 would be a quarter note.
-          ;timerValue needs to be set and is satisfies this equation: timerValue = 255-some_number ;;; ticks_per_half_period = 50 * some_number
-          ;quarterNotes needs to be set and is the number of quarter notes you want to play.
+          ;If given a 1, it plays a single period for the freq.  The coefficient will be how many period to play. 
+          ;timerValue needs to be set and is satisfies this equation: timerValue = 255-some_number ;;; ticks_per_half_period = 10 * some_number
+          ;sixteenthNotes needs to be set and is the number of periods you want to play.  
+		  ;The notes are given in periods because each freq will play for longer or shorter making ticks unreliable.
   mov TMOD, #00000010b	        ;Timer 0 = 8-bit auto reload
   mov TH0, timerValue			;load reload value.
   mov TL0, timerValue			;load default value
@@ -240,16 +241,16 @@ playNote: ;New makeSound function.  Not clean but easier than trying to modify c
   clr TF0				;clear timer 0 overflow
 
   noteLoop:
-  	mov r6, #40
+  	mov r6, #40				;Coefficient to for num periods.  
     freqLoop:
-      mov r0, #10			;Coefficient to for freq.  Ticks_for_half_period = 100 * some_number
+      mov r0, #10			;Coefficient to for freq.  Ticks_for_half_period = 10 * some_number
       timerLoop:
         jnb TF0, timerLoop	        ;delay until timer overflows
         clr TF0						;clear timer overflow
-        djnz r0, timerLoop	        ;jump back to the delayLoop the proper number of times
+        djnz r0, timerLoop	        ;jump back to the timerLoop the proper number of times
       cpl speaker			;flip the speaker
-      djnz r6, freqLoop		;First 14
-    djnz sixteenthNotes, noteLoop         ;Number of quarter not loops
+      djnz r6, freqLoop		
+    djnz sixteenthNotes, noteLoop         ;Number of periods
 
   clr TR0				;done with the timer; turn it off
   ret					;return
