@@ -2,13 +2,15 @@
 
   incBit   equ P2.0 			;switch 1
   decBit   equ P0.1				;switch 4
+  funBit   equ P2.3				;switch 7
   LEDbit0  equ P0.6				;LED 4 [amber]/bit 0
   LEDbit1  equ P2.7				;LED 3 [green]/bit 1
   LEDbit2  equ P0.5				;LED 2 [yellow]/bit 2
   LEDbit3  equ P2.4				;LED 1 [red]/bit 3
   speaker  equ P1.7				;Speaker
   dice	   equ P1.4				;Toggle dice mode  [Switch 5]
-  songButton  equ P2.2				;Play song mode [Switch 9]
+  songButton  equ P2.2			;Play song mode [Switch 9]
+  soundBoardButton	equ P2.1		;Play
 
   LED1	   equ P2.4				;LED1
   LED2	   equ P0.5				;LED2
@@ -31,6 +33,8 @@
   compareValue: ds 1
   resetValue: ds 1
 
+
+
   sixteenthNotes: ds 1
   notePos: ds 1
 
@@ -39,6 +43,7 @@
 
   playSound: dbit 1
   diceMode:  dbit 1
+  soundBoardEnable: dbit 1
 
   prog segment code
   rseg prog
@@ -51,10 +56,12 @@ main:
 	mov SP, #5Fh				;Set up stack pointer
 	mov timerValue, #256-207	;Set inital timer value for 742Hz
 	clr diceMode				;Dice mode off by default
+	clr soundBoardEnable		;
 	mov compareValue,#16		;Set value to overflow at
 	mov resetValue,#15			;Value to reset on underflow
 loop:
 	clr playSound				;reset the sound bit
+	jb soundBoardEnable, skipSong
 	jb incBit, skipIncrease		;skip increasing if button is not pressed
 	inc count				    ;increment count
 	mov A, count			    ;load count to check for overflow
@@ -105,7 +112,18 @@ skipSwap:
     jb songButton, skipSong
     jb diceMode, skipSong
     acall theFinalCountdown
+
+
 skipSong:
+	jb soundBoardButton, checkSoundEnable
+	acall blackOut
+	cpl soundBoardEnable
+soundBoardButtonLoop:
+	jnb soundBoardButton, soundBoardButtonLoop
+checkSoundEnable:
+    jnb soundBoardEnable, skipSoundBoard
+	acall soundBoard
+skipSoundBoard:
 	sjmp loop					;loop back
 
 updateLights:
@@ -194,7 +212,7 @@ dicebitArray: db 1, 1, 0, 0, 0, 0, 0
 
 theFinalCountdown:                      ;Play song
   mov DPTR, #theFinalCountdownNotes     ;move array start into DPTR
-  mov A, #0
+  mov notePos, #0
 playNoteLoop:
   mov A, notePos
   movc A, @A + DPTR                     ;Read in freq coefficient
@@ -236,6 +254,49 @@ playNote: ;New makeSound function.  Not clean but easier than trying to modify c
   clr TR0				;done with the timer; turn it off
   ret					;return
 
+
+soundBoard:
+  acall blackOut
+  clr LED7
+soundLED1:
+  jb incBit, soundLED2
+  clr LED1
+  mov sixteenthNotes, #5
+  mov timerValue, #98
+  acall playNote
+soundLED2:
+  jb decBit, soundLED3
+  clr LED2
+  mov sixteenthNotes, #5
+  mov timerValue, #89
+  acall playNote
+soundLED3:
+  jb funBit, soundLED4
+  clr LED3
+  mov sixteenthNotes, #5
+  mov timerValue, #162
+  acall playNote
+soundLED4:
+  jb dice, soundReturn
+  clr LED5
+  mov DPTR, #theFinalCountdownNotes 
+  mov notePos, #66
+loopSoundB:
+  mov A, notePos
+  movc A, @A + DPTR                     ;Read in freq coefficient
+  mov sixteenthNotes, A
+  inc notePos                           ;Go to next byte
+  mov A, notePos
+  movc A, @A + DPTR                     ;Read in number of sixteenth notes
+  mov timerValue, A
+  inc notePos
+  mov A, notePos
+  xrl A, #92                     ;Check if both sixteenthNotes and timerValue are zero. Sixteenth already there.
+  jz soundReturn
+  acall playNote                        ;Play notes
+  sjmp loopSoundB                     ;Jump to top of loop
+soundReturn:
+  ret
 
 theFinalCountdownNotes:
 ;Measure 18
