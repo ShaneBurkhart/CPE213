@@ -35,16 +35,17 @@ void interrupt0(void) interrupt 1
 		break;
 
                 case KEYBOARD:
-                  // Don't need to do anything right now
+                  // Don't need to do anything right now.  Complemented below.
                 break;
 	}
         SPEAKER = ~SPEAKER; // No matter what need to complement the speaker
 }
 
-void setTimer(unsigned char count)
+void set_timer(unsigned char count)
 { //sets timer to play frequency
   TMOD |= 0x20;
   TH0 = count;
+  TR0 = 1;
 }
 
 void increment_mode()
@@ -59,6 +60,7 @@ void init()
   P2M1 = 0x00;
   P1M1 = 0x00;
   P0M1 = 0x00;
+  set_timer(1); // Some arbitrary set to make sure timer is running
 }
 
 void update_lights()
@@ -67,14 +69,13 @@ void update_lights()
 }
 
 void update_interrupts(){
-  // Set interrupt to only the global enable and serial
+  IE = 0x90; // Set interrupt to only the global enable and serial
   switch(mode)
   {
     case PLAY_SONG_1:
     case PLAY_SONG_2:
-    case KEYBOARD:
       IE |= 0x02; // Right now all need same interrupt but may need more for new modes.
-    break;
+    break; // Don't need to update keyboard since that is done in UI.
   }
 }
 
@@ -91,7 +92,20 @@ void main(void)
 
       if(mode == KEYBOARD)
       {
-
+        if(!KEYBOARD_BUTTON_1)
+        {
+          set_timer(100);
+        }else if(!KEYBOARD_BUTTON_1)
+        {
+          set_timer(150);
+        }else if(!KEYBOARD_BUTTON_1)
+        {
+          set_timer(75);
+        }
+        if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
+          IE |= 0x02;
+        else // else turn it off
+          IE &= 0xFD;
       }
 
       update_lights();
