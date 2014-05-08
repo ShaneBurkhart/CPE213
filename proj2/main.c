@@ -43,7 +43,7 @@ void interrupt0(void) interrupt 1
 
 void set_timer(unsigned char count)
 { //sets timer to play frequency
-  TMOD |= 0x20;
+  TMOD |= 0x02;
   TH0 = count;
   TR0 = 1;
 }
