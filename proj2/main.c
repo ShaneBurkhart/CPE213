@@ -5,14 +5,17 @@
 #define PLAY_SONG_1 1
 #define PLAY_SONG_2 2
 
+//not defined by default for some reason
+sfr IE = 0xA8;
+
 // Speaker
 sbit SPEAKER = P1^7;
 
 // Buttons
 sbit MODE_TOGGLE_BUTTON = P2^2;
-//sbit KEYBOARD_BUTTON_1= P2^2;
-//sbit KEYBOARD_BUTTON_2= P2^2;
-//sbit KEYBOARD_BUTTON_3= P2^2;
+sbit KEYBOARD_BUTTON_1= P2^0;
+sbit KEYBOARD_BUTTON_2= P0^1;
+sbit KEYBOARD_BUTTON_3= P2^3;
 
 // LEDs
 sbit LED1 = P2^4;
@@ -81,11 +84,12 @@ void update_interrupts(){
 
 void main(void)
 {
+		int dummy;
     init();
     while(1)
     {
       if(!MODE_TOGGLE_BUTTON){
-        do{ for(int i = 0; i < 1000; ++i); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
+        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
         increment_mode();
         update_interrupts();
       }
