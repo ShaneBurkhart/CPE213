@@ -4,6 +4,8 @@
 #define KEYBOARD 0
 #define PLAY_SONG_1 1
 #define PLAY_SONG_2 2
+#define MAX_MODE 2
+#define MAX_SONG_LENGTH 10
 
 //not defined by default for some reason
 sfr IE = 0xA8;
@@ -33,34 +35,35 @@ unsigned char mode = KEYBOARD;
 unsigned char song_overflow_count = 0; // Num used to count duration
 unsigned char song_overflow_target = 0; // Num used to check overflow count to. Pre calculated
 unsigned char song_location = 0;	//Current location in the song
+unsigned char song_delay_counter = 0;	//counter to increment for note delay
 
 const char* SONG_NAME_1 = "Example song 1\n\r";
 const char* SONG_NAME_2 = "Different song\n\r";
 
-void interrupt0(void) interrupt 1
+const unsigned char songNotes[2][MAX_SONG_LENGTH]=
 {
-	overflowCount++;
-	if(overflowCount >= 20)
-	{
-		overflowCount = 0;
-	    switch(mode)
-		{
-		 	case PLAY_SONG_1:
-	        case PLAY_SONG_2:
-	            ++song_overflow_count;
-                if(song_overflow_count >= song_overflow_target)
-			    {
-                   // Go to next note
-                }
-			break;
-	
-	        case KEYBOARD:
-	           //speaker is being complemented below
-	        break;
-		}
-	}  
-	SPEAKER = ~SPEAKER; // Complement speaker no matter what
-}
+//song 1
+{-50, -150, -200, -50, -150, -200},
+//song 2
+{-100, -200, -250, -255, -250, -160}
+};
+
+//each is 200 times as long as stated
+const unsigned char noteLengths[2][MAX_SONG_LENGTH]=
+{
+//song 1
+{-50, -50, -50, -100, -100, -100},
+//song 2
+{-50, -100, -200, -40, -80, -160}
+};
+
+const unsigned char songLengths[2]=
+{
+//song 1
+6,
+//song 2
+6,
+};
 
 void set_timer(unsigned char count)
 { //sets timer to play frequency
@@ -69,11 +72,52 @@ void set_timer(unsigned char count)
   TR0 = 1;
 }
 
+void interrupt0(void) interrupt 1
+{
+	unsigned char songIndex = 1;
+	overflowCount++;
+	if(overflowCount >= 20)
+	{
+		overflowCount = 0;
+	    switch(mode)
+		{
+		 	case PLAY_SONG_1:
+				songIndex = 0;
+	        case PLAY_SONG_2:
+				++song_delay_counter;	//lengthen delay
+				if(song_delay_counter == 10)
+				{
+					song_delay_counter = 0;					
+		            ++song_overflow_count;
+	                if(song_overflow_count >= song_overflow_target)
+				    {
+					   song_overflow_count = 0;
+	                   song_location++;
+					   if(song_location == songLengths[songIndex])	//if at the end of the song
+					   {
+					   	  IE &= 0xFD;	//turn off timer
+						  song_location = 0;	//move back to start of song
+						  break;
+					   }	
+					   set_timer(songNotes[songIndex][song_location]);	//set timer to next note frequency
+					   song_overflow_target = noteLengths[songIndex][song_location];	//set next note duration
+	                }
+				}
+			break;
+	
+	        case KEYBOARD:
+	           //speaker is being complemented below
+	        break;
+		}	   
+		SPEAKER = ~SPEAKER; // Complement speaker no matter what
+	}  
+}
+
 void increment_mode()
 {
   song_location = 0; //reset this to normal value
   ++mode;
-  if(mode > PLAY_SONG_2) // should be highest mode
+  if(mode > MAX_MODE) // should be highest mode
     mode = 0;
 }
 
@@ -131,15 +175,15 @@ void main(void)
       {
         if(!KEYBOARD_BUTTON_1)
         {
-          set_timer(100);
+          set_timer(-100);
         }
 		else if(!KEYBOARD_BUTTON_2)
         {
-          set_timer(150);
+          set_timer(-150);
         }
 		else if(!KEYBOARD_BUTTON_3)
         {
-          set_timer(75);
+          set_timer(-75);
         }
         if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
 		{
@@ -156,10 +200,14 @@ void main(void)
 		{
 			if(mode == PLAY_SONG_1)
 			{
+				song_overflow_target = noteLengths[0][0];	//first note length
+				set_timer(songNotes[0][0]);	//first note freq
 				serialTransmit(SONG_NAME_1);
 			}
 			else
 			{
+				song_overflow_target = noteLengths[1][0];	//first note length
+				set_timer(songNotes[1][0]);	//first note freq
 				serialTransmit(SONG_NAME_2);
 			}	   
 			IE |= 0x02; //tell song to start playing
