@@ -27,20 +27,20 @@ sbit PAUSE_SONG = P2^3;			   //Switch 3
 sbit LED1 = P2^4;
 sbit LED2 = P0^5;
 
-//makes it easier to make normal sounds
-unsigned char overflowCount = 0;
-
 unsigned char mode = KEYBOARD;
 
-unsigned char song_overflow_count = 0; // Num used to count duration
-unsigned char song_overflow_target = 0; // Num used to check overflow count to. Pre calculated
+int dummy;
+
 unsigned char song_location = 0;	//Current location in the song
 unsigned char song_delay_counter = 0;	//counter to increment for note delay
+unsigned char current_note_length = 0;
+unsigned char freq_multiplier = 10; // Count to allow for longer freq delays
+unsigned char song_index = 1;
 
 const char* SONG_NAME_1 = "Example song 1\n\r";
 const char* SONG_NAME_2 = "Different song\n\r";
 
-const unsigned char songNotes[2][MAX_SONG_LENGTH]=
+const unsigned char song_notes[2][MAX_SONG_LENGTH]=
 {
 //song 1
 {-50, -150, -200, -50, -150, -200},
@@ -49,7 +49,7 @@ const unsigned char songNotes[2][MAX_SONG_LENGTH]=
 };
 
 //each is 200 times as long as stated
-const unsigned char noteLengths[2][MAX_SONG_LENGTH]=
+const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
 {
 //song 1
 {-50, -50, -50, -100, -100, -100},
@@ -57,7 +57,7 @@ const unsigned char noteLengths[2][MAX_SONG_LENGTH]=
 {-50, -100, -200, -40, -80, -160}
 };
 
-const unsigned char songLengths[2]=
+const unsigned char song_lengths[2]=
 {
 //song 1
 6,
@@ -74,43 +74,43 @@ void set_timer(unsigned char count)
 
 void interrupt0(void) interrupt 1
 {
-	unsigned char songIndex = 1;
-	overflowCount++;
-	if(overflowCount >= 20)
-	{
-		overflowCount = 0;
-	    switch(mode)
-		{
-		 	case PLAY_SONG_1:
-				songIndex = 0;
-	        case PLAY_SONG_2:
-				++song_delay_counter;	//lengthen delay
-				if(song_delay_counter == 10)
-				{
-					song_delay_counter = 0;					
-		            ++song_overflow_count;
-	                if(song_overflow_count >= song_overflow_target)
-				    {
-					   song_overflow_count = 0;
-	                   song_location++;
-					   if(song_location == songLengths[songIndex])	//if at the end of the song
-					   {
-					   	  IE &= 0xFD;	//turn off timer
-						  song_location = 0;	//move back to start of song
-						  break;
-					   }	
-					   set_timer(songNotes[songIndex][song_location]);	//set timer to next note frequency
-					   song_overflow_target = noteLengths[songIndex][song_location];	//set next note duration
-	                }
-				}
-			break;
-	
-	        case KEYBOARD:
-	           //speaker is being complemented below
-	        break;
-		}	   
-		SPEAKER = ~SPEAKER; // Complement speaker no matter what
-	}  
+  freq_multiplier--; // Do this up here so not another nested
+  if(freq_multiplier != 0)
+    return;
+
+  freq_multiplier = 10;
+  song_index = 1;
+  switch(mode)
+  {
+    case PLAY_SONG_1:
+      songIndex = 0;
+    case PLAY_SONG_2:
+      ++song_delay_counter;	//lengthen delay
+      if(song_delay_counter != 255) // Some multiplier. Avoiding nesting again.
+        break; // Break so can complement
+
+      song_delay_counter = 0;
+
+      current_note_length--;
+      if(current_note_length != 0) // Checks if note is done.
+        break; // Break to complement.
+
+      song_location++;
+      if(song_location == song_lengths[song_index])	//if at the end of the song
+      {
+        IE &= 0xFD;	//turn off timer interrupt
+        break;
+      }
+
+      set_timer(song_notes[song_index][song_location]);	//set timer to next note frequency
+      current_note_length = note_lengths[song_index][song_location]; //set next note duration
+      break;
+    case KEYBOARD:
+       //speaker is being complemented below
+    break;
+  }
+
+  SPEAKER = ~SPEAKER; // Complement speaker no matter what
 }
 
 void increment_mode()
@@ -142,11 +142,11 @@ void update_interrupts()
   //other interrupts are not needed
 }
 
-void serialTransmit(const char* string)
-{				   
+void serial_transmit(const char* string)
+{
 	unsigned char i;
-    unsigned char length = 0; 
-    uart_init();	
+    unsigned char length = 0;
+    uart_init();
 	for(length = 0; string[length] != 0; length++);  //get the length of the string
 	for(i = 0; i < length; i++)
 	{
@@ -154,21 +154,25 @@ void serialTransmit(const char* string)
 	}
 }
 
+void start_song(int song_index)
+{
+  song_location = 0;
+  current_note_length = note_lengths[song_index][0];	//first note length
+  set_timer(song_notes[song_index][0]);	//first note freq
+}
+
 void main(void)
 {
-	int dummy;
     init();
+
     while(1)
     {
       if(!MODE_TOGGLE_BUTTON)
 	  {
         increment_mode();
-        update_interrupts();	
+        update_interrupts();
         update_lights();
-		//Rebound delay
-		for(dummy = 0; dummy < 1000; dummy++);
-		// Wait until button up
-		while(!MODE_TOGGLE_BUTTON); 
+        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
       }
 
       if(mode == KEYBOARD)
@@ -200,22 +204,17 @@ void main(void)
 		{
 			if(mode == PLAY_SONG_1)
 			{
-				song_overflow_target = noteLengths[0][0];	//first note length
-				set_timer(songNotes[0][0]);	//first note freq
-				serialTransmit(SONG_NAME_1);
+                          start_song(0);
+                          serial_transmit(SONG_NAME_1);
 			}
 			else
 			{
-				song_overflow_target = noteLengths[1][0];	//first note length
-				set_timer(songNotes[1][0]);	//first note freq
-				serialTransmit(SONG_NAME_2);
-			}	   
+                          start_song(1);
+                          serial_transmit(SONG_NAME_2);
+			}
 			IE |= 0x02; //tell song to start playing
-			//Rebound delay
-			for(dummy = 0; dummy < 1000; dummy++);
-			// Wait until button up
-			while(!PLAY_SONG);
-		}											
+                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
+		}
 		if(!STOP_SONG)
 		{
 			IE &= 0xFD;	//song stops playing
