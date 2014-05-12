@@ -213,16 +213,18 @@ void main(void)
                           serial_transmit(SONG_NAME_2);
 			}
 			IE |= 0x02; //tell song to start playing
-                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
+                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!PLAY_SONG); // Wait until button up
 		}
 		if(!STOP_SONG)
 		{
 			IE &= 0xFD;	//song stops playing
 			song_location = 0; //reset location
+                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!STOP_SONG); // Wait until button up
 		}
 		if(!PAUSE_SONG)
 		{
 			IE &= 0xFD; //song stops playing
+                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!PAUSE_SONG); // Wait until button up
 		}
 	  }
     }
