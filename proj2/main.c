@@ -23,6 +23,12 @@ sbit PLAY_SONG = P2^0;			   //Switch 1
 sbit STOP_SONG = P0^1;			   //Switch 2
 sbit PAUSE_SONG = P2^3;			   //Switch 3
 
+sbit METER_0 = P3^1;
+sbit METER_1 = P3^0;
+sbit METER_2 = P1^4;
+sbit METER_3 = P0^2;
+sbit METER_4 = P0^0;
+
 // LEDs
 sbit LED1 = P2^4;
 sbit LED2 = P0^5;
@@ -37,8 +43,8 @@ unsigned char current_note_length = 0;
 unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
 
-code const char* const SONG_NAME_1 = "Mary had a little lamb.\n\r";
-code const char* const SONG_NAME_2 = "Hot cross buns\n\r";
+code const char* const SONG_NAME_1 = "Mary Had a Little Lamb\n\r";
+code const char* const SONG_NAME_2 = "Hot Cross Buns\n\r";
 
 code const unsigned char song_notes[2][MAX_SONG_LENGTH]=
 {
@@ -126,6 +132,7 @@ void increment_mode()
 
 void init()
 {
+  P3M1 = 0x00;
   P2M1 = 0x00;
   P1M1 = 0x00;
   P0M1 = 0x00;
@@ -164,33 +171,73 @@ void start_song(int song_index)
   set_timer(song_notes[song_index][0]);	//first note freq
 }
 
+void update_freq_lights()
+{
+	if((IE & 0x02) == 0)  //if timer interrupt is off
+	{
+		METER_0 = 1;
+		METER_1 = 1;
+		METER_2 = 1;
+		METER_3 = 1;
+		METER_4 = 1;
+		return;
+	}
+
+	if(TH0 > 20)
+		METER_0	= 0;
+	else
+		METER_0 = 1;
+
+	if(TH0 > 35)
+		METER_1 = 0;
+	else
+		METER_1 = 1;
+
+	if(TH0 > 50)
+		METER_2 = 0;
+	else
+		METER_2 = 1;
+
+	if(TH0 > 65)
+		METER_3 = 0;
+	else
+		METER_3 = 1;
+
+	if(TH0 > 80)
+		METER_4 = 0;
+	else
+		METER_4 = 1;
+}
+
 void main(void)
 {
     init();
 
     while(1)
     {
+	  update_freq_lights();
       if(!MODE_TOGGLE_BUTTON)
 	  {
         increment_mode();
         update_interrupts();
         update_lights();
-        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!MODE_TOGGLE_BUTTON); // Wait until button up
+        for(dummy = 0; dummy < 1000; dummy++);
+		while(!MODE_TOGGLE_BUTTON); // Wait until button up
       }
 
       if(mode == KEYBOARD)
       {
         if(!KEYBOARD_BUTTON_1)
         {
-          set_timer(-100);
+          set_timer(69);
         }
 		else if(!KEYBOARD_BUTTON_2)
         {
-          set_timer(-150);
+          set_timer(47);
         }
 		else if(!KEYBOARD_BUTTON_3)
         {
-          set_timer(-75);
+          set_timer(21);
         }
         if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
 		{
