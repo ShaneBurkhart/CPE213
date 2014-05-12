@@ -38,23 +38,23 @@ unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
 
 code const char* const SONG_NAME_1 = "Mary had a little lamb.\n\r";
-code const char* const SONG_NAME_2 = "Different song\n\r";
+code const char* const SONG_NAME_2 = "Hot cross buns\n\r";
 
 code const unsigned char song_notes[2][MAX_SONG_LENGTH]=
 {
 //song 1
 {69, 47, 21, 47, 69, 69, 69, 47, 47, 47, 69, 99, 99, 69, 47, 21, 47, 69, 69, 69, 69, 47, 47, 69, 47, 21},
 //song 2
-{-100, -200, -250, -255, -250, -160}
+{69,47,21,69,47,21,69,69,69,69,69,47,47,47,47,69,47,21}
 };
 
-//each is 150 times as long as stated
+//each is 140 times as long as stated
 code const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
 {
 //song 1
 {25, 28, 31, 28, 25, 25, 50, 28, 28, 56, 25, 21, 42, 25, 28, 31, 28, 25, 25, 25, 25, 28, 28, 25, 28, 125},
 //song 2
-{20, 30, 40, 50, 55, 60}
+{50,56,125,50,56,125,100,25,25,25,25,28,28,28,28,50,56,125}
 };
 
 code const unsigned char song_lengths[2]=
@@ -62,7 +62,7 @@ code const unsigned char song_lengths[2]=
 //song 1
 26,
 //song 2
-6,
+18,
 };
 
 void set_timer(unsigned char count)
@@ -74,6 +74,7 @@ void set_timer(unsigned char count)
 
 void interrupt0(void) interrupt 1
 {
+  short seperate_notes = 0;
   freq_multiplier--; // Do this up here so not another nested
   if(freq_multiplier != 0)
     return;
@@ -94,6 +95,8 @@ void interrupt0(void) interrupt 1
       current_note_length--;
       if(current_note_length != 0) // Checks if note is done.
         break; // Break to complement.
+
+	  for(seperate_notes = 0; seperate_notes<5000; seperate_notes++);
 
       song_location++;
       if(song_location == song_lengths[song_index])	//if at the end of the song
