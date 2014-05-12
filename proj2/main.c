@@ -4,7 +4,8 @@
 #define KEYBOARD 0
 #define PLAY_SONG_1 1
 #define PLAY_SONG_2 2
-#define MAX_MODE 2
+#define TEACH 3
+#define MAX_MODE 3
 #define MAX_SONG_LENGTH 26
 
 //not defined by default for some reason
@@ -43,6 +44,8 @@ unsigned char current_note_length = 0;
 unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
 
+unsigned char teach_index = 0;
+
 code const char* const SONG_NAME_1 = "Mary Had a Little Lamb\n\r";
 code const char* const SONG_NAME_2 = "Hot Cross Buns\n\r";
 
@@ -51,7 +54,7 @@ code const unsigned char song_notes[2][MAX_SONG_LENGTH]=
 //song 1
 {69, 47, 21, 47, 69, 69, 69, 47, 47, 47, 69, 99, 99, 69, 47, 21, 47, 69, 69, 69, 69, 47, 47, 69, 47, 21},
 //song 2
-{69,47,21,69,47,21,69,69,69,69,69,47,47,47,47,69,47,21}
+{69,47,21,69,47,21,21,21,21,21,47,47,47,47,69,47,21}
 };
 
 //each is 140 times as long as stated
@@ -60,7 +63,7 @@ code const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
 //song 1
 {25, 28, 31, 28, 25, 25, 50, 28, 28, 56, 25, 21, 42, 25, 28, 31, 28, 25, 25, 25, 25, 28, 28, 25, 28, 125},
 //song 2
-{50,56,125,50,56,125,100,25,25,25,25,28,28,28,28,50,56,125}
+{50,56,125,50,56,125,31,31,31,31,28,28,28,28,50,56,125}
 };
 
 code const unsigned char song_lengths[2]=
@@ -68,7 +71,7 @@ code const unsigned char song_lengths[2]=
 //song 1
 26,
 //song 2
-18,
+17,
 };
 
 void set_timer(unsigned char count)
@@ -102,7 +105,7 @@ void interrupt0(void) interrupt 1
       if(current_note_length != 0) // Checks if note is done.
         break; // Break to complement.
 
-	  for(seperate_notes = 0; seperate_notes<5000; seperate_notes++);
+	  for(seperate_notes = 0; seperate_notes<10000; seperate_notes++);
 
       song_location++;
       if(song_location == song_lengths[song_index])	//if at the end of the song
@@ -209,6 +212,96 @@ void update_freq_lights()
 		METER_4 = 1;
 }
 
+void keyboard_input()
+{
+	if(!KEYBOARD_BUTTON_1)
+    {
+      set_timer(69);
+    }
+	else if(!KEYBOARD_BUTTON_2)
+    {
+      set_timer(47);
+    }
+	else if(!KEYBOARD_BUTTON_3)
+    {
+      set_timer(21);
+    }
+    if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
+	{
+      IE |= 0x02;
+	}
+    else // else turn it off
+	{
+      IE &= 0xFD;
+	}
+}
+
+void failed_noise()
+{
+	set_timer(200);
+	IE |= 0x02;
+	for(dummy = 0; dummy < 10000; dummy++);
+	IE &= 0xFD;
+}
+
+void success_noise()
+{
+	set_timer(100);
+	IE |= 0x02;
+	for(dummy = 0; dummy < 10000; dummy++);
+	IE &= 0xFD;
+}
+
+void teach()
+{
+	 unsigned char key1, key2, key3;
+	 keyboard_input();
+	 key1 = KEYBOARD_BUTTON_1;
+	 key2 =	KEYBOARD_BUTTON_2;
+	 key3 = KEYBOARD_BUTTON_3;
+	 if(!key1)
+	 {
+	 	if(song_notes[1][teach_index] != 69)
+		{
+			failed_noise();
+			teach_index = 0;
+			return;
+		}
+		teach_index++;
+	 }
+	 else if(!key2)
+	 {
+	 	if(song_notes[1][teach_index] != 47)
+		{
+			failed_noise();
+			teach_index = 0;
+			return;
+		}
+		teach_index++;
+	 }
+	 else if(!key3)
+	 {
+	 	if(song_notes[1][teach_index] != 21)
+		{
+			failed_noise();
+			teach_index = 0;
+			return;
+		}
+		teach_index++;
+	 }
+	 if(!key1 || !key2 || !key3)
+	 {
+	 	for(dummy = 0; dummy < 1000; dummy++);
+     	while(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3); // Wait until button up
+	 }
+
+	 if(teach_index == song_lengths[1])
+	 {
+	  	success_noise();
+		teach_index = 0;
+	 }
+}
+
 void main(void)
 {
     init();
@@ -223,31 +316,19 @@ void main(void)
         update_lights();
         for(dummy = 0; dummy < 1000; dummy++);
 		while(!MODE_TOGGLE_BUTTON); // Wait until button up
+
+		if(mode == TEACH)
+			teach_index = 0;
       }
 
       if(mode == KEYBOARD)
       {
-        if(!KEYBOARD_BUTTON_1)
-        {
-          set_timer(69);
-        }
-		else if(!KEYBOARD_BUTTON_2)
-        {
-          set_timer(47);
-        }
-		else if(!KEYBOARD_BUTTON_3)
-        {
-          set_timer(21);
-        }
-        if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
-		{
-          IE |= 0x02;
-		}
-        else // else turn it off
-		{
-          IE &= 0xFD;
-		}
+        keyboard_input();
       }
+	  else if(mode == TEACH)
+	  {
+	    teach();
+	  }
 	  else
 	  {
 	  	if(!PLAY_SONG && ((IE & 0x02) == 0))  //only start playing song if it hasn't started
