@@ -5,7 +5,7 @@
 #define PLAY_SONG_1 1
 #define PLAY_SONG_2 2
 #define MAX_MODE 2
-#define MAX_SONG_LENGTH 10
+#define MAX_SONG_LENGTH 26
 
 //not defined by default for some reason
 sfr IE = 0xA8;
@@ -34,33 +34,33 @@ int dummy;
 unsigned char song_location = 0;	//Current location in the song
 unsigned char song_delay_counter = 0;	//counter to increment for note delay
 unsigned char current_note_length = 0;
-unsigned char freq_multiplier = 10; // Count to allow for longer freq delays
+unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
 
-const char* SONG_NAME_1 = "Example song 1\n\r";
-const char* SONG_NAME_2 = "Different song\n\r";
+code const char* const SONG_NAME_1 = "Mary had a little lamb.\n\r";
+code const char* const SONG_NAME_2 = "Different song\n\r";
 
-const unsigned char song_notes[2][MAX_SONG_LENGTH]=
+code const unsigned char song_notes[2][MAX_SONG_LENGTH]=
 {
 //song 1
-{-50, -150, -200, -50, -150, -200},
+{69, 47, 21, 47, 69, 69, 69, 47, 47, 47, 69, 99, 99, 69, 47, 21, 47, 69, 69, 69, 69, 47, 47, 69, 47, 21},
 //song 2
 {-100, -200, -250, -255, -250, -160}
 };
 
-//each is 200 times as long as stated
-const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
+//each is 150 times as long as stated
+code const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
 {
 //song 1
-{-50, -50, -50, -100, -100, -100},
+{25, 28, 31, 28, 25, 25, 50, 28, 28, 56, 25, 21, 42, 25, 28, 31, 28, 25, 25, 25, 25, 28, 28, 25, 28, 125},
 //song 2
-{-50, -100, -200, -40, -80, -160}
+{20, 30, 40, 50, 55, 60}
 };
 
-const unsigned char song_lengths[2]=
+code const unsigned char song_lengths[2]=
 {
 //song 1
-6,
+26,
 //song 2
 6,
 };
@@ -78,15 +78,15 @@ void interrupt0(void) interrupt 1
   if(freq_multiplier != 0)
     return;
 
-  freq_multiplier = 10;
+  freq_multiplier = 20;
   song_index = 1;
   switch(mode)
   {
     case PLAY_SONG_1:
-      songIndex = 0;
+      song_index = 0;
     case PLAY_SONG_2:
       ++song_delay_counter;	//lengthen delay
-      if(song_delay_counter != 255) // Some multiplier. Avoiding nesting again.
+      if(song_delay_counter != 7) // Some multiplier. Avoiding nesting again.
         break; // Break so can complement
 
       song_delay_counter = 0;
@@ -204,27 +204,30 @@ void main(void)
 		{
 			if(mode == PLAY_SONG_1)
 			{
-                          start_song(0);
-                          serial_transmit(SONG_NAME_1);
+                start_song(0);
+                serial_transmit(SONG_NAME_1);
 			}
 			else
 			{
-                          start_song(1);
-                          serial_transmit(SONG_NAME_2);
+                start_song(1);
+                serial_transmit(SONG_NAME_2);
 			}
 			IE |= 0x02; //tell song to start playing
-                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!PLAY_SONG); // Wait until button up
+			for(dummy = 0; dummy < 1000; dummy++);
+            while(!PLAY_SONG); // Wait until button up
 		}
 		if(!STOP_SONG)
 		{
 			IE &= 0xFD;	//song stops playing
 			song_location = 0; //reset location
-                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!STOP_SONG); // Wait until button up
+            for(dummy = 0; dummy < 1000; dummy++);
+			while(!STOP_SONG); // Wait until button up
 		}
 		if(!PAUSE_SONG)
 		{
 			IE &= 0xFD; //song stops playing
-                        do{ for(dummy = 0; dummy < 1000; dummy++); }while(!PAUSE_SONG); // Wait until button up
+            for(dummy = 0; dummy < 1000; dummy++);
+			while(!PAUSE_SONG); // Wait until button up
 		}
 	  }
     }
