@@ -43,6 +43,8 @@ unsigned char song_delay_counter = 0;	//counter to increment for note delay
 unsigned char current_note_length = 0;
 unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
+unsigned char lyric_char_index = 0;
+unsigned char current_lyric_length;
 
 unsigned char teach_index = 0;
 
@@ -64,6 +66,12 @@ code const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
 {25, 28, 31, 28, 25, 25, 50, 28, 28, 56, 25, 21, 42, 25, 28, 31, 28, 25, 25, 25, 25, 28, 28, 25, 28, 125},
 //song 2
 {50,56,125,50,56,125,31,31,31,31,28,28,28,28,50,56,125}
+};
+
+code const char* song_lyrics[2][MAX_SONG_LENGTH]=
+{
+{"Ma", "ry", " had", " a", " lit", "tle", " lamb,", " lit", "tle", " lamb,", " lit", "tle", " lamb.\r\n", "Ma", "ry", " had", " a" , " lit","tle", " lamb.", " Its", " fleece", " was", " white", " as", " snow.\r\n"},
+{"Hot", " cross", " buns.", " Hot", " cross", " buns.", " One", " a", " pen", "ny,", " two", " a", " pen", "ny.", " Hot", " cross", " buns.\r\n"}
 };
 
 code const unsigned char song_lengths[2]=
@@ -99,6 +107,12 @@ void interrupt0(void) interrupt 1
       if(song_delay_counter != 7) // Some multiplier. Avoiding nesting again.
         break; // Break so can complement
 
+	  if(lyric_char_index < current_lyric_length && !mtxbusy)	//transmit lyrics
+	  {
+	  	uart_transmit(song_lyrics[song_index][song_location][lyric_char_index]);
+		lyric_char_index++;
+	  }
+
       song_delay_counter = 0;
 
       current_note_length--;
@@ -107,12 +121,14 @@ void interrupt0(void) interrupt 1
 
 	  for(seperate_notes = 0; seperate_notes<10000; seperate_notes++);
 
-      song_location++;
+      song_location++;		   //move to next note
       if(song_location == song_lengths[song_index])	//if at the end of the song
       {
         IE &= 0xFD;	//turn off timer interrupt
         break;
       }
+	  lyric_char_index = 0;	   //reset lyric location
+	  for(current_lyric_length = 0; song_lyrics[song_index][song_location][current_lyric_length] != 0; current_lyric_length++);	//get lyric length
 
       set_timer(song_notes[song_index][song_location]);	//set timer to next note frequency
       current_note_length = note_lengths[song_index][song_location]; //set next note duration
@@ -168,7 +184,9 @@ void serial_transmit(const char* string)
 }
 
 void start_song(int song_index)
-{
+{ 
+  lyric_char_index = 0;	   //reset lyric location
+  for(current_lyric_length = 0; song_lyrics[song_index][0][current_lyric_length] != 0; current_lyric_length++);	//get lyric length
   song_location = 0;
   current_note_length = note_lengths[song_index][0];	//first note length
   set_timer(song_notes[song_index][0]);	//first note freq
@@ -334,14 +352,14 @@ void main(void)
 	  	if(!PLAY_SONG && ((IE & 0x02) == 0))  //only start playing song if it hasn't started
 		{
 			if(mode == PLAY_SONG_1)
-			{
-                start_song(0);
+			{  
                 serial_transmit(SONG_NAME_1);
+                start_song(0);
 			}
 			else
-			{
-                start_song(1);
+			{					 
                 serial_transmit(SONG_NAME_2);
+                start_song(1);
 			}
 			IE |= 0x02; //tell song to start playing
 			for(dummy = 0; dummy < 1000; dummy++);
