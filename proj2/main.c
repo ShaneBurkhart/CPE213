@@ -287,6 +287,7 @@ void keyboard_input()
     {
       set_timer(21);
     }
+	/*
 	else if(!KEYBOARD_BUTTON_4)
     {
       set_timer(99);
@@ -299,6 +300,7 @@ void keyboard_input()
     {
       set_timer(15);
     }
+	*/	 
     if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
 	{
       IE |= 0x02;
@@ -307,22 +309,6 @@ void keyboard_input()
 	{
       IE &= 0xFD;
 	}
-}
-
-void failed_noise()
-{
-	set_timer(200);
-	IE |= 0x02;
-	for(dummy = 0; dummy < 10000; dummy++);
-	IE &= 0xFD;
-}
-
-void success_noise()
-{
-	set_timer(100);
-	IE |= 0x02;
-	for(dummy = 0; dummy < 10000; dummy++);
-	IE &= 0xFD;
 }
 
 void turn_off_lights()
@@ -354,15 +340,10 @@ void main(void)
     while(1)
     {
 	  update_freq_lights();
-	  if(mode != EFFECT){
+	  if(mode != EFFECT)
+	  {
 	  	turn_off_lights();
 	  	if((IE & 0x02) != 0){
-			if(TH0 == 99){
-				LED1 = 0;
-				LED3 = 0;
-				LED7 = 0;
-				LED9 = 0;
-			}
 			if(TH0 == 69){
 	   			LED2 = 0;
 				LED4 = 0;
@@ -378,8 +359,15 @@ void main(void)
 				LED7 = 0;
 				LED2 = 0;
 				LED9 = 0;
+			}		  
+			if(TH0 == 99){
+				LED1 = 0;
+				LED3 = 0;
+				LED7 = 0;
+				LED9 = 0;
 			}
-			if(TH0 == 68){
+			/*
+			if(TH0 == 38){
 				LED1 = 0;
 				LED6 = 0;
 				LED7 = 0;
@@ -389,6 +377,7 @@ void main(void)
 				LED4 = 0;
 				LED9 = 0;
 			}
+			*/
 		}
 		else{
 			update_lights();
