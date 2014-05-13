@@ -19,6 +19,9 @@ sbit MODE_TOGGLE_BUTTON = P2^2;	   //Switch 9
 sbit KEYBOARD_BUTTON_1= P2^0;	   //Switch 1
 sbit KEYBOARD_BUTTON_2= P0^1;	   //Switch 2
 sbit KEYBOARD_BUTTON_3= P2^3;	   //Switch 3
+sbit KEYBOARD_BUTTON_4= P0^2;	   //Switch 4
+sbit KEYBOARD_BUTTON_5= P1^4;	   //Switch 5
+sbit KEYBOARD_BUTTON_6= P0^0;	   //Switch 6
 
 sbit PLAY_SONG = P2^0;			   //Switch 1
 sbit STOP_SONG = P0^1;			   //Switch 2
@@ -115,6 +118,8 @@ void set_timer(unsigned char count)
   TH0 = count;
   TR0 = 1;
 }
+
+void turn_off_lights();
 
 void interrupt0(void) interrupt 1
 {
@@ -282,6 +287,18 @@ void keyboard_input()
     {
       set_timer(21);
     }
+	else if(!KEYBOARD_BUTTON_4)
+    {
+      set_timer(99);
+    }
+	else if(!KEYBOARD_BUTTON_5)
+    {
+      set_timer(38);
+    }
+	else if(!KEYBOARD_BUTTON_6)
+    {
+      set_timer(15);
+    }
     if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interrupt
 	{
       IE |= 0x02;
@@ -337,6 +354,46 @@ void main(void)
     while(1)
     {
 	  update_freq_lights();
+	  if(mode != EFFECT){
+	  	turn_off_lights();
+	  	if((IE & 0x02) != 0){
+			if(TH0 == 99){
+				LED1 = 0;
+				LED3 = 0;
+				LED7 = 0;
+				LED9 = 0;
+			}
+			if(TH0 == 69){
+	   			LED2 = 0;
+				LED4 = 0;
+				LED6 = 0;
+				LED8 = 0;
+			}
+			if(TH0 == 47){
+				LED1 = 0;
+				LED8 = 0;
+				LED3 = 0;
+			}
+			if(TH0 == 21){
+				LED7 = 0;
+				LED2 = 0;
+				LED9 = 0;
+			}
+			if(TH0 == 68){
+				LED1 = 0;
+				LED6 = 0;
+				LED7 = 0;
+			}
+			if(TH0 == 15){
+				LED3 = 0;
+				LED4 = 0;
+				LED9 = 0;
+			}
+		}
+		else{
+			update_lights();
+		}
+	  }
       if(!MODE_TOGGLE_BUTTON)
 	  {
 	  	is_effecting = 0;
