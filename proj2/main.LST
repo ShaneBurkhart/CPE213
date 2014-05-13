@@ -1,0 +1,446 @@
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 1   
+
+
+C51 COMPILER V8.18, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil8051\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "REG932.H"
+   2          #include "uart.h"
+   3          
+   4          #define KEYBOARD 0
+   5          #define PLAY_SONG_1 1
+   6          #define PLAY_SONG_2 2
+   7          #define EFFECT 3
+   8          #define MAX_MODE 3
+   9          #define MAX_SONG_LENGTH 26
+  10          
+  11          //not defined by default for some reason
+  12          sfr IE = 0xA8;
+  13          
+  14          // Speaker
+  15          sbit SPEAKER = P1^7;
+  16          
+  17          // Buttons
+  18          sbit MODE_TOGGLE_BUTTON = P2^2;    //Switch 9
+  19          sbit KEYBOARD_BUTTON_1= P2^0;      //Switch 1
+  20          sbit KEYBOARD_BUTTON_2= P0^1;      //Switch 2
+  21          sbit KEYBOARD_BUTTON_3= P2^3;      //Switch 3
+  22          
+  23          sbit PLAY_SONG = P2^0;                     //Switch 1
+  24          sbit STOP_SONG = P0^1;                     //Switch 2
+  25          sbit PAUSE_SONG = P2^3;                    //Switch 3
+  26          
+  27          sbit METER_0 = P3^1;
+  28          sbit METER_1 = P3^0;
+  29          sbit METER_2 = P1^4;
+  30          sbit METER_3 = P0^2;
+  31          sbit METER_4 = P0^0;
+  32          
+  33          
+  34          
+  35          // LEDs
+  36          sbit LED1 = P2^4;
+  37          sbit LED2 = P0^5;
+  38          sbit LED3 = P2^7;
+  39          sbit LED4 = P0^6;
+  40          sbit LED5 = P1^6;
+  41          sbit LED6 = P0^4;
+  42          sbit LED7 = P2^5;
+  43          sbit LED8 = P0^7;
+  44          sbit LED9 = P2^6;
+  45          
+  46          unsigned char mode = KEYBOARD;
+  47          
+  48          int dummy;
+  49          
+  50          unsigned char song_location = 0;        //Current location in the song
+  51          unsigned char song_delay_counter = 0;   //counter to increment for note delay
+  52          unsigned char current_note_length = 0;
+  53          unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
+  54          unsigned char song_index = 1;
+  55          unsigned char lyric_char_index = 0;
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 2   
+
+  56          unsigned char current_lyric_length;
+  57          unsigned char effect_index = 0;
+  58          unsigned char effect_length;
+  59          unsigned char is_effecting = 0;
+  60          unsigned char effect_direction = 1;
+  61          
+  62          
+  63          unsigned char teach_index = 0;
+  64          
+  65          code const char* const SONG_NAME_1 = "Mary Had a Little Lamb\n\r";
+  66          code const char* const SONG_NAME_2 = "Hot Cross Buns\n\r";
+  67          
+  68          code const unsigned char song_notes[2][MAX_SONG_LENGTH]=
+  69          {
+  70          //song 1
+  71          {69, 47, 21, 47, 69, 69, 69, 47, 47, 47, 69, 99, 99, 69, 47, 21, 47, 69, 69, 69, 69, 47, 47, 69, 47, 21},
+  72          //song 2
+  73          {69,47,21,69,47,21,21,21,21,21,47,47,47,47,69,47,21}
+  74          };
+  75          
+  76          //each is 140 times as long as stated
+  77          code const unsigned char note_lengths[2][MAX_SONG_LENGTH]=
+  78          {
+  79          //song 1
+  80          {25, 28, 31, 28, 25, 25, 50, 28, 28, 56, 25, 21, 42, 25, 28, 31, 28, 25, 25, 25, 25, 28, 28, 25, 28, 125},
+  81          //song 2
+  82          {50,56,125,50,56,125,31,31,31,31,28,28,28,28,50,56,125}
+  83          };
+  84          
+  85          code const char* song_lyrics[2][MAX_SONG_LENGTH]=
+  86          {
+  87          {"Ma", "ry", " had", " a", " lit", "tle", " lamb,", " lit", "tle", " lamb,", " lit", "tle", " lamb.\r\n", 
+             -"Ma", "ry", " had", " a" , " lit","tle", " lamb.", " Its", " fleece", " was", " white", " as", " snow.\r\n"},
+  88          {"Hot", " cross", " buns.", " Hot", " cross", " buns.", " One", " a", " pen", "ny,", " two", " a", " pen",
+             - "ny.", " Hot", " cross", " buns.\r\n"}
+  89          };
+  90          
+  91          code const unsigned char song_lengths[2]=
+  92          {
+  93          //song 1
+  94          26,
+  95          //song 2
+  96          17,
+  97          };
+  98          
+  99          code const unsigned char effect_tones[9] =
+ 100          {
+ 101                  40,
+ 102                  60,
+ 103                  80,
+ 104                  100,
+ 105                  120,
+ 106                  140,
+ 107                  160,
+ 108                  180,
+ 109                  200
+ 110          };
+ 111          
+ 112          void set_timer(unsigned char count)
+ 113          { //sets timer to play frequency
+ 114   1        TMOD |= 0x02;
+ 115   1        TH0 = count;
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 3   
+
+ 116   1        TR0 = 1;
+ 117   1      }
+ 118          
+ 119          void interrupt0(void) interrupt 1
+ 120          {
+ 121   1        short seperate_notes = 0;
+ 122   1        freq_multiplier--; // Do this up here so not another nested
+ 123   1        if(freq_multiplier != 0)
+ 124   1          return;
+ 125   1      
+ 126   1        freq_multiplier = 20;
+ 127   1        song_index = 1;
+ 128   1        switch(mode)
+ 129   1        {
+ 130   2          case PLAY_SONG_1:
+ 131   2            song_index = 0;
+ 132   2          case PLAY_SONG_2:
+ 133   2            ++song_delay_counter;     //lengthen delay
+ 134   2            if(song_delay_counter != 7) // Some multiplier. Avoiding nesting again.
+ 135   2              break; // Break so can complement
+ 136   2      
+ 137   2                if(lyric_char_index < current_lyric_length)   //transmit lyrics
+ 138   2                {
+ 139   3                      uart_transmit(song_lyrics[song_index][song_location][lyric_char_index]);
+ 140   3                      lyric_char_index++;
+ 141   3                }
+ 142   2      
+ 143   2            song_delay_counter = 0;
+ 144   2      
+ 145   2            current_note_length--;
+ 146   2            if(current_note_length != 0) // Checks if note is done.
+ 147   2              break; // Break to complement.
+ 148   2      
+ 149   2                for(seperate_notes = 0; seperate_notes<10000; seperate_notes++);
+ 150   2      
+ 151   2            song_location++;             //move to next note
+ 152   2            if(song_location == song_lengths[song_index])     //if at the end of the song
+ 153   2            {
+ 154   3              IE &= 0xFD;     //turn off timer interrupt
+ 155   3              break;
+ 156   3            }
+ 157   2                lyric_char_index = 0;    //reset lyric location
+ 158   2                for(current_lyric_length = 0; song_lyrics[song_index][song_location][current_lyric_length] != 0; curren
+             -t_lyric_length++);    //get lyric length
+ 159   2      
+ 160   2            set_timer(song_notes[song_index][song_location]); //set timer to next note frequency
+ 161   2            current_note_length = note_lengths[song_index][song_location]; //set next note duration
+ 162   2            break;
+ 163   2          case KEYBOARD:
+ 164   2             //speaker is being complemented below
+ 165   2          break;
+ 166   2              case EFFECT:
+ 167   2                      effect_length--;
+ 168   2                      if(effect_length == 0)
+ 169   2                      {
+ 170   3                              effect_index += effect_direction;
+ 171   3                              if(effect_index == 8) effect_direction = -1;
+ 172   3                              if(effect_index == 0) effect_direction = 1;
+ 173   3                              set_timer(effect_tones[effect_index]);
+ 174   3                              effect_length = 200 / effect_tones[effect_index] * 50;
+ 175   3                      }
+ 176   2              break;
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 4   
+
+ 177   2        }
+ 178   1      
+ 179   1        SPEAKER = ~SPEAKER; // Complement speaker no matter what
+ 180   1      }
+ 181          
+ 182          void increment_mode()
+ 183          {
+ 184   1        song_location = 0; //reset this to normal value
+ 185   1        ++mode;
+ 186   1        if(mode > MAX_MODE) // should be highest mode
+ 187   1          mode = 0;
+ 188   1      }
+ 189          
+ 190          void init()
+ 191          {
+ 192   1        P3M1 = 0x00;
+ 193   1        P2M1 = 0x00;
+ 194   1        P1M1 = 0x00;
+ 195   1        P0M1 = 0x00;
+ 196   1        set_timer(1); // Some arbitrary set to make sure timer is running
+ 197   1        IE = 0x90;  //Enable interrupts by default
+ 198   1      }
+ 199          
+ 200          void update_lights()
+ 201          { // Updates the lights to show mode
+ 202   1        LED1 = !(mode>>1);  //2nd bit of mode
+ 203   1        LED2 = !(mode%2);       //lowest bit of mode
+ 204   1      }
+ 205          
+ 206          void update_interrupts()
+ 207          {
+ 208   1        IE = 0x90; // Set interrupt to only the global enable and serial
+ 209   1        //other interrupts are not needed
+ 210   1      }
+ 211          
+ 212          void serial_transmit(const char* string)
+ 213          {
+ 214   1              unsigned char i;
+ 215   1          unsigned char length = 0;
+ 216   1          uart_init();
+ 217   1              for(length = 0; string[length] != 0; length++);  //get the length of the string
+ 218   1              for(i = 0; i < length; i++)
+ 219   1              {
+ 220   2                      uart_transmit(string[i]);
+ 221   2              }
+ 222   1      }
+ 223          
+ 224          void start_song(int song_index)
+ 225          { 
+ 226   1        lyric_char_index = 0;    //reset lyric location
+ 227   1        for(current_lyric_length = 0; song_lyrics[song_index][0][current_lyric_length] != 0; current_lyric_lengt
+             -h++);        //get lyric length
+ 228   1        song_location = 0;
+ 229   1        current_note_length = note_lengths[song_index][0];    //first note length
+ 230   1        set_timer(song_notes[song_index][0]); //first note freq
+ 231   1      }
+ 232          
+ 233          void update_freq_lights()
+ 234          {
+ 235   1              if((IE & 0x02) == 0)  //if timer interrupt is off
+ 236   1              {
+ 237   2                      METER_0 = 1;
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 5   
+
+ 238   2                      METER_1 = 1;
+ 239   2                      METER_2 = 1;
+ 240   2                      METER_3 = 1;
+ 241   2                      METER_4 = 1;
+ 242   2                      return;
+ 243   2              }
+ 244   1      
+ 245   1              if(TH0 > 20)
+ 246   1                      METER_0 = 0;
+ 247   1              else
+ 248   1                      METER_0 = 1;
+ 249   1      
+ 250   1              if(TH0 > 35)
+ 251   1                      METER_1 = 0;
+ 252   1              else
+ 253   1                      METER_1 = 1;
+ 254   1      
+ 255   1              if(TH0 > 50)
+ 256   1                      METER_2 = 0;
+ 257   1              else
+ 258   1                      METER_2 = 1;
+ 259   1      
+ 260   1              if(TH0 > 65)
+ 261   1                      METER_3 = 0;
+ 262   1              else
+ 263   1                      METER_3 = 1;
+ 264   1      
+ 265   1              if(TH0 > 80)
+ 266   1                      METER_4 = 0;
+ 267   1              else
+ 268   1                      METER_4 = 1;
+ 269   1      }
+ 270          
+ 271          void keyboard_input()
+ 272          {
+ 273   1              if(!KEYBOARD_BUTTON_1)
+ 274   1          {
+ 275   2            set_timer(69);
+ 276   2          }
+ 277   1              else if(!KEYBOARD_BUTTON_2)
+ 278   1          {
+ 279   2            set_timer(47);
+ 280   2          }
+ 281   1              else if(!KEYBOARD_BUTTON_3)
+ 282   1          {
+ 283   2            set_timer(21);
+ 284   2          }
+ 285   1          if(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3) // If button pressed turn on interr
+             -upt
+ 286   1              {
+ 287   2            IE |= 0x02;
+ 288   2              }
+ 289   1          else // else turn it off
+ 290   1              {
+ 291   2            IE &= 0xFD;
+ 292   2              }
+ 293   1      }
+ 294          
+ 295          void failed_noise()
+ 296          {
+ 297   1              set_timer(200);
+ 298   1              IE |= 0x02;
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 6   
+
+ 299   1              for(dummy = 0; dummy < 10000; dummy++);
+ 300   1              IE &= 0xFD;
+ 301   1      }
+ 302          
+ 303          void success_noise()
+ 304          {
+ 305   1              set_timer(100);
+ 306   1              IE |= 0x02;
+ 307   1              for(dummy = 0; dummy < 10000; dummy++);
+ 308   1              IE &= 0xFD;
+ 309   1      }
+ 310          
+ 311          void turn_off_lights()
+ 312          {
+ 313   1              LED1 = 1; LED2 = 1; LED3 = 1; LED4 = 1; LED5 = 1;
+ 314   1              LED6 = 1; LED7 = 1; LED8 = 1; LED9 = 1;
+ 315   1      }
+ 316          
+ 317          void effect_lights()
+ 318          {
+ 319   1              turn_off_lights();
+ 320   1              switch(effect_index){
+ 321   2                      case 0: LED1 = 0; break;
+ 322   2                      case 1: LED2 = 0; break;
+ 323   2                      case 2: LED3 = 0; break;
+ 324   2                      case 3: LED4 = 0; break;
+ 325   2                      case 4: LED5 = 0; break;
+ 326   2                      case 5: LED6 = 0; break;
+ 327   2                      case 6: LED7 = 0; break;
+ 328   2                      case 7: LED8 = 0; break;
+ 329   2                      case 8: LED9 = 0; break;
+ 330   2              }
+ 331   1      }
+ 332          
+ 333          void main(void)
+ 334          {
+ 335   1          init();
+ 336   1      
+ 337   1          while(1)
+ 338   1          {
+ 339   2                update_freq_lights();
+ 340   2            if(!MODE_TOGGLE_BUTTON)
+ 341   2                {
+ 342   3                      is_effecting = 0;
+ 343   3              increment_mode();
+ 344   3              update_interrupts();
+ 345   3                      turn_off_lights();
+ 346   3              update_lights();
+ 347   3              for(dummy = 0; dummy < 1000; dummy++);
+ 348   3                      while(!MODE_TOGGLE_BUTTON); // Wait until button up
+ 349   3            }
+ 350   2      
+ 351   2            if(mode == KEYBOARD)
+ 352   2            {
+ 353   3              keyboard_input();
+ 354   3            }
+ 355   2                else if(mode == EFFECT)
+ 356   2                {
+ 357   3                      if(is_effecting){
+ 358   4                              effect_lights();
+ 359   4                      }
+ 360   3                      if(!PLAY_SONG)
+C51 COMPILER V8.18   MAIN                                                                  05/12/2014 20:31:05 PAGE 7   
+
+ 361   3                      {
+ 362   4                              is_effecting = 1;
+ 363   4                              effect_index = 0;
+ 364   4                              effect_direction = 1;
+ 365   4                              effect_length = 200 / effect_tones[effect_index] * 50;
+ 366   4                              set_timer(effect_tones[effect_index]);
+ 367   4                              for(dummy = 0; dummy < 1000; dummy++);
+ 368   4                              while(!PLAY_SONG); // Wait until button up
+ 369   4                              IE |= 0x02;
+ 370   4                      }
+ 371   3                }
+ 372   2                else
+ 373   2                {
+ 374   3                      if(!PLAY_SONG && ((IE & 0x02) == 0))  //only start playing song if it hasn't started
+ 375   3                      {
+ 376   4                              if(mode == PLAY_SONG_1)
+ 377   4                              {  
+ 378   5                      serial_transmit(SONG_NAME_1);
+ 379   5                      start_song(0);
+ 380   5                              }
+ 381   4                              else
+ 382   4                              {                                        
+ 383   5                      serial_transmit(SONG_NAME_2);
+ 384   5                      start_song(1);
+ 385   5                              }
+ 386   4                              IE |= 0x02; //tell song to start playing
+ 387   4                              for(dummy = 0; dummy < 1000; dummy++);
+ 388   4                  while(!PLAY_SONG); // Wait until button up
+ 389   4                      }
+ 390   3                      if(!STOP_SONG)
+ 391   3                      {
+ 392   4                              IE &= 0xFD;     //song stops playing
+ 393   4                              song_location = 0; //reset location
+ 394   4                  for(dummy = 0; dummy < 1000; dummy++);
+ 395   4                              while(!STOP_SONG); // Wait until button up
+ 396   4                      }
+ 397   3                      if(!PAUSE_SONG)
+ 398   3                      {
+ 399   4                              IE &= 0xFD; //song stops playing
+ 400   4                  for(dummy = 0; dummy < 1000; dummy++);
+ 401   4                              while(!PAUSE_SONG); // Wait until button up
+ 402   4                      }
+ 403   3                }
+ 404   2          }
+ 405   1      }
+ 406          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1175    ----
+   CONSTANT SIZE    =    458    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     15       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

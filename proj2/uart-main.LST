@@ -1,0 +1,46 @@
+C51 COMPILER V8.18   UART_MAIN                                                             05/12/2014 19:03:47 PAGE 1   
+
+
+C51 COMPILER V8.18, COMPILATION OF MODULE UART_MAIN
+OBJECT MODULE PLACED IN uart-main.OBJ
+COMPILER INVOKED BY: C:\Keil8051\C51\BIN\C51.EXE uart-main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          #include <reg932.h>
+   3          #include "uart.h"
+   4          
+   5          void main() {
+   6   1      
+   7   1      EA = 1;
+   8   1      uart_init();
+   9   1      uart_transmit('a');
+  10   1      
+  11   1      //uart_init();
+  12   1      uart_transmit('q');
+  13   1      //uart_init();
+  14   1      uart_transmit('k');
+  15   1      //uart_init();
+  16   1      EA = 0;
+  17   1      
+  18   1      EA = 1;
+  19   1      uart_transmit('y');
+  20   1      EA = 0;
+  21   1      
+  22   1      while(1);
+  23   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     33    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

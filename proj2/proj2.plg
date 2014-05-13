@@ -3,7 +3,414 @@
 <pre>
 <h1>µVision3 Build Log</h1>
 <h2>Project:</h2>
-\\minerfiles.mst.edu\dfs\users\athb79\Desktop\CPE213\proj2\proj2.uv2
-Project File Date:  05/07/2014
+S:\Desktop\CPE213\proj2\proj2.uv2
+Project File Date:  05/12/2014
 
 <h2>Output:</h2>
+Build target 'Target 1'
+compiling main.c...
+compiling uart-main.c...
+compiling uart-update.c...
+linking...
+*** ERROR L104: MULTIPLE PUBLIC DEFINITIONS
+    SYMBOL:  MAIN
+    MODULE:  uart-main.obj (UART_MAIN)
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MAIN?UART_MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+*** ERROR L118: REFERENCE MADE TO ERRONEOUS EXTERNAL
+    SYMBOL:  MAIN
+    MODULE:  C:\KEIL8051\C51\LIB\C51S.LIB (?C_INIT)
+    ADDRESS: 0A28H
+Program Size: data=23.1 xdata=0 code=1372
+Target not created
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=23.1 xdata=0 code=1339
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=23.1 xdata=0 code=1339
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(110): error C202: 'mtxbusy': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(110): error C202: 'mtxbusy': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(35): error C231: 'LED1': redefinition
+MAIN.C(36): error C231: 'LED1': redefinition
+MAIN.C(37): error C231: 'LED1': redefinition
+MAIN.C(38): error C231: 'LED1': redefinition
+MAIN.C(39): error C231: 'LED1': redefinition
+MAIN.C(40): error C231: 'LED1': redefinition
+MAIN.C(41): error C231: 'LED1': redefinition
+MAIN.C(44): error C231: 'LED1': redefinition
+MAIN.C(45): error C231: 'LED2': redefinition
+MAIN.C(120): error C202: 'mtxbusy': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(44): error C231: 'LED1': redefinition
+MAIN.C(45): error C231: 'LED2': redefinition
+MAIN.C(120): error C202: 'mtxbusy': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(119): error C202: 'mtxbusy': undefined identifier
+MAIN.C(306): error C202: 'effect_index': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(134): error C202: 'mtxbusy': undefined identifier
+MAIN.C(164): error C202: 'effect_tones': undefined identifier
+MAIN.C(327): error C202: 'effect_tones': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(134): error C202: 'mtxbusy': undefined identifier
+Target not created
+Build target 'Target 1'
+compiling main.c...
+MAIN.C(164): warning C206: 'setTimer': missing function-prototype
+MAIN.C(164): error C267: 'setTimer': requires ANSI-style prototype
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1776
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1782
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1917
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1923
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1923
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1923
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=29.1 xdata=0 code=1925
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1958
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2017
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2025
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2025
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2025
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2025
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=2025
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1915
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1923
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1923
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1920
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=30.1 xdata=0 code=1899
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+error - can't create command input file 'main.__i'
+Target not created
+Build target 'Target 1'
+error - can't create command input file 'main.__i'
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1932
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1939
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1939
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1942
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1942
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling uart-update.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1946
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1946
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?FAILED_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SUCCESS_NOISE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART_GET?UART_UPDATE
+Program Size: data=31.1 xdata=0 code=1946
+creating hex file from "proj2"...
+"proj2" - 0 Error(s), 3 Warning(s).

@@ -1,0 +1,4 @@
+"main.obj",
+"uart-update.obj" 
+TO "proj2" 
+RAMSIZE(256) 

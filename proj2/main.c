@@ -4,7 +4,7 @@
 #define KEYBOARD 0
 #define PLAY_SONG_1 1
 #define PLAY_SONG_2 2
-#define TEACH 3
+#define EFFECT 3
 #define MAX_MODE 3
 #define MAX_SONG_LENGTH 26
 
@@ -30,9 +30,18 @@ sbit METER_2 = P1^4;
 sbit METER_3 = P0^2;
 sbit METER_4 = P0^0;
 
+
+
 // LEDs
 sbit LED1 = P2^4;
 sbit LED2 = P0^5;
+sbit LED3 = P2^7;
+sbit LED4 = P0^6;
+sbit LED5 = P1^6;
+sbit LED6 = P0^4;
+sbit LED7 = P2^5;
+sbit LED8 = P0^7;
+sbit LED9 = P2^6;
 
 unsigned char mode = KEYBOARD;
 
@@ -45,6 +54,11 @@ unsigned char freq_multiplier = 20; // Count to allow for longer freq delays
 unsigned char song_index = 1;
 unsigned char lyric_char_index = 0;
 unsigned char current_lyric_length;
+unsigned char effect_index = 0;
+unsigned char effect_length;
+unsigned char is_effecting = 0;
+unsigned char effect_direction = 1;
+
 
 unsigned char teach_index = 0;
 
@@ -82,6 +96,19 @@ code const unsigned char song_lengths[2]=
 17,
 };
 
+code const unsigned char effect_tones[9] =
+{
+	40,
+	60,
+	80,
+	100,
+	120,
+	140,
+	160,
+	180,
+	200
+};
+
 void set_timer(unsigned char count)
 { //sets timer to play frequency
   TMOD |= 0x02;
@@ -107,7 +134,7 @@ void interrupt0(void) interrupt 1
       if(song_delay_counter != 7) // Some multiplier. Avoiding nesting again.
         break; // Break so can complement
 
-	  if(lyric_char_index < current_lyric_length && !mtxbusy)	//transmit lyrics
+	  if(lyric_char_index < current_lyric_length)	//transmit lyrics
 	  {
 	  	uart_transmit(song_lyrics[song_index][song_location][lyric_char_index]);
 		lyric_char_index++;
@@ -136,6 +163,17 @@ void interrupt0(void) interrupt 1
     case KEYBOARD:
        //speaker is being complemented below
     break;
+	case EFFECT:
+		effect_length--;
+		if(effect_length == 0)
+		{
+			effect_index += effect_direction;
+			if(effect_index == 8) effect_direction = -1;
+			if(effect_index == 0) effect_direction = 1;
+			set_timer(effect_tones[effect_index]);
+			effect_length = 200 / effect_tones[effect_index] * 50;
+		}
+	break;
   }
 
   SPEAKER = ~SPEAKER; // Complement speaker no matter what
@@ -270,54 +308,26 @@ void success_noise()
 	IE &= 0xFD;
 }
 
-void teach()
+void turn_off_lights()
 {
-	 unsigned char key1, key2, key3;
-	 keyboard_input();
-	 key1 = KEYBOARD_BUTTON_1;
-	 key2 =	KEYBOARD_BUTTON_2;
-	 key3 = KEYBOARD_BUTTON_3;
-	 if(!key1)
-	 {
-	 	if(song_notes[1][teach_index] != 69)
-		{
-			failed_noise();
-			teach_index = 0;
-			return;
-		}
-		teach_index++;
-	 }
-	 else if(!key2)
-	 {
-	 	if(song_notes[1][teach_index] != 47)
-		{
-			failed_noise();
-			teach_index = 0;
-			return;
-		}
-		teach_index++;
-	 }
-	 else if(!key3)
-	 {
-	 	if(song_notes[1][teach_index] != 21)
-		{
-			failed_noise();
-			teach_index = 0;
-			return;
-		}
-		teach_index++;
-	 }
-	 if(!key1 || !key2 || !key3)
-	 {
-	 	for(dummy = 0; dummy < 1000; dummy++);
-     	while(!KEYBOARD_BUTTON_1 || !KEYBOARD_BUTTON_2 || !KEYBOARD_BUTTON_3); // Wait until button up
-	 }
+	LED1 = 1; LED2 = 1; LED3 = 1; LED4 = 1;	LED5 = 1;
+	LED6 = 1; LED7 = 1; LED8 = 1; LED9 = 1;
+}
 
-	 if(teach_index == song_lengths[1])
-	 {
-	  	success_noise();
-		teach_index = 0;
-	 }
+void effect_lights()
+{
+	turn_off_lights();
+	switch(effect_index){
+		case 0: LED1 = 0; break;
+		case 1: LED2 = 0; break;
+		case 2: LED3 = 0; break;
+		case 3: LED4 = 0; break;
+		case 4: LED5 = 0; break;
+		case 5: LED6 = 0; break;
+		case 6: LED7 = 0; break;
+		case 7: LED8 = 0; break;
+		case 8: LED9 = 0; break;
+	}
 }
 
 void main(void)
@@ -329,23 +339,35 @@ void main(void)
 	  update_freq_lights();
       if(!MODE_TOGGLE_BUTTON)
 	  {
+	  	is_effecting = 0;
         increment_mode();
         update_interrupts();
+		turn_off_lights();
         update_lights();
         for(dummy = 0; dummy < 1000; dummy++);
 		while(!MODE_TOGGLE_BUTTON); // Wait until button up
-
-		if(mode == TEACH)
-			teach_index = 0;
       }
 
       if(mode == KEYBOARD)
       {
         keyboard_input();
       }
-	  else if(mode == TEACH)
+	  else if(mode == EFFECT)
 	  {
-	    teach();
+	  	if(is_effecting){
+			effect_lights();
+		}
+	  	if(!PLAY_SONG)
+		{
+			is_effecting = 1;
+			effect_index = 0;
+			effect_direction = 1;
+			effect_length = 200 / effect_tones[effect_index] * 50;
+			set_timer(effect_tones[effect_index]);
+			for(dummy = 0; dummy < 1000; dummy++);
+			while(!PLAY_SONG); // Wait until button up
+			IE |= 0x02;
+		}
 	  }
 	  else
 	  {
